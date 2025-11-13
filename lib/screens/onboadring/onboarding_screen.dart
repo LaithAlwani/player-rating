@@ -8,6 +8,7 @@ import 'package:player_rating/screens/home_screen.dart';
 import 'package:player_rating/screens/onboadring/onboadring_name.dart';
 import 'package:player_rating/screens/onboadring/onboarding_bottom_navbar.dart';
 import 'package:player_rating/screens/onboadring/onboarding_image.dart';
+import 'package:player_rating/screens/profile.dart';
 import 'package:player_rating/services/firestore_services.dart';
 import 'package:player_rating/services/storage_service.dart';
 
@@ -66,11 +67,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
     try {
       await FirestoreService.createUser(user);
+      final createdUser = await FirestoreService.getUserById(user.uid);
+    
       // ✅ Success — navigate to main layout
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => HomeScreen(user: user)),
+        MaterialPageRoute(builder: (_) => Profile(user: createdUser ?? user) ),
       );
     } catch (e) {
       // ❌ Error — show a message
@@ -89,7 +92,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       data: (value) {
         if (value != null) {
           //if the provider fetchs a user data from the users collection
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomeScreen(user: value)));
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen(user: value)),
+          );
         }
         _currentUser = firebaseUser;
         return Scaffold(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:player_rating/models/app_user.dart';
 import 'package:player_rating/screens/profile.dart';
+import 'package:player_rating/services/auth_service.dart';
 import 'package:player_rating/services/firestore_services.dart';
-
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, this.user});
@@ -11,7 +11,18 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Player Ratings")),
+      appBar: AppBar(
+        title: Text("Player Ratings"),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await AuthService.signOut();
+              // Navigator.pop(context);
+            },
+            icon: const Icon(Icons.logout),
+          ),
+        ],
+      ),
       body: FutureBuilder<List<AppUser>>(
         future: FirestoreService.fethcAllUsers(),
         builder: (context, snapshot) {
@@ -30,7 +41,12 @@ class HomeScreen extends StatelessWidget {
                   final player = players[index];
                   return InkWell(
                     onTap: () => {
-                      Navigator.push(context, MaterialPageRoute(builder: (_)=>Profile(user:player)))
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => Profile(user: player),
+                        ),
+                      ),
                     },
                     child: ListTile(
                       leading: CircleAvatar(
