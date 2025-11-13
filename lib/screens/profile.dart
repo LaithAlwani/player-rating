@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:player_rating/models/app_user.dart';
 import 'package:player_rating/provider/auth_provider.dart';
 import 'package:player_rating/services/auth_service.dart';
+import 'package:player_rating/services/firestore_services.dart';
 
 class Profile extends ConsumerStatefulWidget {
   const Profile({super.key, required this.user});
@@ -15,11 +16,13 @@ class Profile extends ConsumerStatefulWidget {
 
 class _ProfileState extends ConsumerState<Profile> {
   late int rating;
-  bool isUpdating = false;
+  bool isSaving = false;
+  late int orginalRating;
 
   @override
   void initState() {
     rating = widget.user.rating ?? 0;
+    orginalRating = widget.user.rating ?? 0;
     super.initState();
   }
 
@@ -48,47 +51,51 @@ class _ProfileState extends ConsumerState<Profile> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                CircleAvatar(
-                  backgroundImage: NetworkImage(widget.user.photoUrl ?? ""),
-                  radius: 100,
+                Hero(
+                  tag: widget.user.uid,
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(widget.user.photoUrl ?? ""),
+                    radius: 100,
+                  ),
                 ),
                 SizedBox(height: 32),
                 Text(
                   widget.user.displayName,
-                  style: const TextStyle(fontSize: 48),
+                  style: const TextStyle(fontSize: 36),
                   textAlign: TextAlign.center,
                 ),
                 Text(
                   widget.user.email,
-                  style: const TextStyle(fontSize: 24),
+                  style: const TextStyle(fontSize: 18),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 32),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        (rating != widget.user.rating)
-                            ? setState(() {
-                                rating -= 1;
-                              })
-                            : null;
-                        // add points to current player
-                      },
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith<Color?>((
-                              Set<MaterialState> states,
-                            ) {
-                              if (rating == widget.user.rating) {
-                                return Colors.grey;
-                              }
-                              return null; // Use the component's default.
-                            }),
+                    if (canEdit)
+                      ElevatedButton(
+                        onPressed: () {
+                          (rating != orginalRating)
+                              ? setState(() {
+                                  rating -= 1;
+                                })
+                              : null;
+                          // add points to current player
+                        },
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.resolveWith<Color?>((
+                                Set<MaterialState> states,
+                              ) {
+                                if (rating == orginalRating) {
+                                  return Colors.grey;
+                                }
+                                return null; // Use the component's default.
+                              }),
+                        ),
+                        child: const Icon(Icons.remove),
                       ),
-                      child: const Icon(Icons.remove),
-                    ),
                     Text(
                       (rating).toString(),
                       style: const TextStyle(fontSize: 32),
@@ -106,14 +113,30 @@ class _ProfileState extends ConsumerState<Profile> {
                   ],
                 ),
                 SizedBox(height: 32),
-                FilledButton(
-                  onPressed: () {
-                    print("Saving rating: $rating");
+                if (canEdit && rating != orginalRating)
+                  FilledButton(
+                    onPressed: (orginalRating != rating && !isSaving)
+                        ? () async {
+                            setState(() => isSaving = true);
 
-                    // add points to current player
-                  },
-                  child: const Text("Save"),
-                ),
+                            await FirestoreService.updateUser(widget.user.uid, {
+                              "rating": rating,
+                            });
+
+                            setState(() {
+                              orginalRating = rating;
+                              isSaving = false;
+                            });
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text("Rating updated!")),
+                            );
+                          }
+                        : null,
+                    child: isSaving
+                        ? const CircularProgressIndicator()
+                        : const Text("Save"),
+                  ),
               ],
             ),
           ),

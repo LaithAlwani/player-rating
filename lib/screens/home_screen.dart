@@ -49,14 +49,33 @@ class HomeScreen extends StatelessWidget {
                       ),
                     },
                     child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: NetworkImage(
-                          player.photoUrl ?? "dummyProfilePic",
+                      leading: Hero(
+                        tag: player.uid,
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(
+                            player.photoUrl ?? "dummyProfilePic",
+                          ),
                         ),
                       ),
-                      title: Text(player.displayName),
-                      subtitle: Text(player.email),
-                      trailing: Text("${player.rating}"),
+                      title: Text(
+                        player.displayName,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                      subtitle: Text(
+                        player.email,
+                        style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      trailing: Text(
+                        "${player.rating}",
+                        style: const TextStyle(fontSize: 18),
+                      ),
                     ),
                   );
                 },
