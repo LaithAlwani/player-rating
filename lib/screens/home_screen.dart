@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:player_rating/models/app_user.dart';
 import 'package:player_rating/screens/profile.dart';
 import 'package:player_rating/utils/dummy_data.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, this.user});
 
+ final AppUser? user;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
