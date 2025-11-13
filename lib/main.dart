@@ -31,7 +31,6 @@ class MyApp extends StatelessWidget {
 
           return user.when(
             data: (value) {
-              print("User: $value");
               if (value == null) return const WelcomeScreen();
               if(value.role != "admin"){
                 return Profile(user: value);

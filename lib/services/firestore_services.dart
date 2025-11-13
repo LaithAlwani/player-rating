@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:player_rating/models/app_user.dart';
-import 'package:player_rating/utils/dummy_data.dart';
 
 class FirestoreService {
   static final _firestore = FirebaseFirestore.instance;
@@ -58,8 +56,12 @@ class FirestoreService {
 
   static Future<List<AppUser>> fethcAllUsers() async {
     try {
-      final querySnapshot = await _userRef.get();
-      print(  "✅ Fetched ${querySnapshot.size} users.");
+      //where rols is not admin
+
+      final querySnapshot = await _userRef
+          .where("role", isNotEqualTo: "admin")
+          .get();
+      print("✅ Fetched ${querySnapshot.size} users.");
       return querySnapshot.docs.map((doc) => doc.data()).toList();
     } catch (e) {
       print("❌ Error fetching users: $e");
