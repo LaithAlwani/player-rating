@@ -9,16 +9,19 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("user Profile")),
+      appBar: AppBar(title: Text("${user.displayName}'s Profile")),
       body: Center(
         child: Column(
           children: [
-            CircleAvatar(backgroundImage: NetworkImage(user.photoUrl ?? ""), radius: 50),
-            Text(user.displayName, style: const TextStyle(fontSize: 20)),
-            Text(user.email, style: const TextStyle(fontSize: 14)),
+            CircleAvatar(
+              backgroundImage: NetworkImage(user.photoUrl ?? ""),
+              radius: 100,
+            ),
+            Text(user.displayName, style: const TextStyle(fontSize: 48)),
+            Text(user.email, style: const TextStyle(fontSize: 24)),
             Text(
               (user.rating ?? 0).toString(),
-              style: const TextStyle(fontSize: 24),
+              style: const TextStyle(fontSize: 32),
             ),
           ],
         ),
