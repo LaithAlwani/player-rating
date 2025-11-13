@@ -5,6 +5,7 @@ import 'package:player_rating/firebase_options.dart';
 import 'package:player_rating/models/app_user.dart';
 import 'package:player_rating/provider/auth_provider.dart';
 import 'package:player_rating/screens/home_screen.dart';
+import 'package:player_rating/screens/profile.dart';
 import 'package:player_rating/screens/wlecome/welcome.dart';
 
 void main() async {
@@ -31,6 +32,9 @@ class MyApp extends StatelessWidget {
           return user.when(
             data: (value) {
               if (value == null) return const WelcomeScreen();
+              if(value.role != "admin"){
+                return Profile(user: value);
+              }
               return HomeScreen(user: value);
             },
             error: (error, stack) =>

@@ -17,9 +17,9 @@ class HomeScreen extends StatelessWidget {
           itemBuilder: (context, index) {
             final player = players[index];
             return InkWell(
-              onTap: () => {
-                Navigator.push(context, MaterialPageRoute(builder: (_)=>Profile(player:player)))
-              },
+              // onTap: () => {
+              //   Navigator.push(context, MaterialPageRoute(builder: (_)=>Profile(user:player)))
+              // },
               child: ListTile(
                 leading: CircleAvatar(
                   backgroundImage: NetworkImage(player["image"]),
