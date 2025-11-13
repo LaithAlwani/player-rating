@@ -1,6 +1,6 @@
 final List<Map<String, dynamic>> players = [
   {
-    "name": "Liam Carter",
+    "name": "ليم كارتر",
     "image": "https://randomuser.me/api/portraits/men/45.jpg",
     "email": "liam.carter@example.com",
     "rating": 0,
