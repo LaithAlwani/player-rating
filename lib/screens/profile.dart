@@ -85,8 +85,8 @@ class _ProfileState extends ConsumerState<Profile> {
                         },
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.resolveWith<Color?>((
-                                Set<MaterialState> states,
+                              WidgetStateProperty.resolveWith<Color?>((
+                                Set<WidgetState> states,
                               ) {
                                 if (rating == orginalRating) {
                                   return Colors.grey;

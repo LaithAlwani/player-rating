@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
           return user.when(
             data: (value) {
               if (value == null) return const WelcomeScreen();
-              if(value.role != "admin"){
+              if (value.role != "admin") {
                 return Profile(user: value);
               }
               return HomeScreen(user: value);

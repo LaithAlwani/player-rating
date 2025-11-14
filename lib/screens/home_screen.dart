@@ -4,10 +4,32 @@ import 'package:player_rating/screens/profile.dart';
 import 'package:player_rating/services/auth_service.dart';
 import 'package:player_rating/services/firestore_services.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, this.user});
 
   final AppUser? user;
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late Future<List<AppUser>> _playersFuture;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _playersFuture = FirestoreService.fethcAllUsers();
+    super.initState();
+  }
+
+  Future<void> _refreshPlayers() async {
+    setState(() {
+      _playersFuture = FirestoreService.fethcAllUsers();
+    });
+    await _playersFuture;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +46,7 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: FutureBuilder<List<AppUser>>(
-        future: FirestoreService.fethcAllUsers(),
+        future: _playersFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -34,7 +56,8 @@ class HomeScreen extends StatelessWidget {
             return const Center(child: Text("No players found."));
           } else {
             final players = snapshot.data!;
-            return Center(
+            return RefreshIndicator(
+              onRefresh: _refreshPlayers,
               child: ListView.builder(
                 itemCount: players.length,
                 itemBuilder: (context, index) {
