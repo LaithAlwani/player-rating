@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -23,37 +25,34 @@ class SocialLoginSection extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
                 "or sign in with",
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.grey[800]),
               ),
             ),
             Expanded(child: Divider(thickness: 1)),
           ],
         ),
 
-        const SizedBox(height: 20),
+        const SizedBox(height: 32),
 
         // ---- Social Buttons ----
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
+
           children: [
             // Google Button
             _socialButton(
               icon: FontAwesomeIcons.google,
               onTap: onGoogle,
+              color: Colors.redAccent,
             ),
 
-            const SizedBox(width: 20),
+            if (Platform.isIOS) const SizedBox(width: 80),
 
             // Apple Button
-            _socialButton(
-              icon: FontAwesomeIcons.apple,
-              onTap: onApple,
-            ),
+            if (Platform.isIOS)
+              _socialButton(icon: FontAwesomeIcons.apple, onTap: onApple),
           ],
-        )
+        ),
       ],
     );
   }
@@ -62,6 +61,7 @@ class SocialLoginSection extends StatelessWidget {
   Widget _socialButton({
     required IconData icon,
     required VoidCallback onTap,
+    Color? color,
   }) {
     return InkWell(
       onTap: onTap,
@@ -71,17 +71,10 @@ class SocialLoginSection extends StatelessWidget {
         height: 55,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(40),
-          border: Border.all(
-            width: 1,
-            color: Colors.grey.shade400,
-          ),
+          border: Border.all(width: 1, color: Colors.grey.shade400),
         ),
         child: Center(
-          child: FaIcon(
-            icon,
-            size: 26,
-            color: Colors.black87,
-          ),
+          child: FaIcon(icon, size: 26, color: color ?? Colors.black),
         ),
       ),
     );
