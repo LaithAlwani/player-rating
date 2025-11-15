@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:player_rating/screens/wlecome/signin.dart';
 import 'package:player_rating/screens/wlecome/signup.dart';
+import 'package:player_rating/shared/social_logins.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -46,6 +47,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 ),
               ],
             ),
+            SizedBox(height: 48),
+            SocialLoginSection(onGoogle: () {}, onApple: () {}),
           ],
         ),
       ),
