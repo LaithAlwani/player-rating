@@ -51,7 +51,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             SizedBox(height: 48),
             SocialLoginSection(
               onGoogle: AuthService.signInWithGoogle,
-              onApple: AuthService.signInWithApple,
+              onApple: () {},
             ),
           ],
         ),
