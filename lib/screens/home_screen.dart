@@ -14,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late Future<List<AppUser>> _playersFuture;
+  late Stream<List<AppUser>> _playersFuture;
 
   @override
   void initState() {
@@ -45,8 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: FutureBuilder<List<AppUser>>(
-        future: _playersFuture,
+      body: StreamBuilder<List<AppUser>>(
+        stream: _playersFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

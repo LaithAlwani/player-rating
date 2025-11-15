@@ -54,19 +54,15 @@ class FirestoreService {
     }
   }
 
-  static Future<List<AppUser>> fethcAllUsers() async {
-    try {
-      //where rols is not admin
-
-      final querySnapshot = await _userRef
-          .where("role", isNotEqualTo: "admin")
-          .get();
-      print("✅ Fetched ${querySnapshot.size} users.");
-      return querySnapshot.docs.map((doc) => doc.data()).toList();
-    } catch (e) {
-      print("❌ Error fetching users: $e");
-      return [];
-    }
+  static Stream<List<AppUser>> fethcAllUsers() {
+    //where rols is not admin
+    return _userRef
+        .where("role", isNotEqualTo: "admin")
+        .snapshots()
+        .map(
+          (querySnapshot) =>
+              querySnapshot.docs.map((doc) => doc.data()).toList(),
+        );
   }
 
   /// Stream of user updates (for real-time profile changes)
