@@ -58,6 +58,7 @@ class FirestoreService {
     //where rols is not admin
     return _userRef
         .where("role", isNotEqualTo: "admin")
+        .orderBy("rating", descending: true)
         .snapshots()
         .map(
           (querySnapshot) =>
