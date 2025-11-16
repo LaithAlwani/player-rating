@@ -24,6 +24,7 @@ class FirestoreService {
 
   /// Get a user by their UID
   static Future<AppUser?> getUserById(String uid) async {
+    print("🔔 Fetching user with UID: $uid");
     try {
       final userDoc = await _userRef.doc(uid).get();
       if (!userDoc.exists) return null;

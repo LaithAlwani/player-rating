@@ -27,7 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _playersFuture = FirestoreService.fethcAllUsers();
     });
-    await _playersFuture;
   }
 
   @override

@@ -1,13 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:player_rating/firebase_options.dart';
 import 'package:player_rating/models/app_user.dart';
 
 class AuthService {
   static final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-
   // google login
-  static Future<AppUser?> signInWithGoogle() async {
+  static Future<bool> signInWithGoogle() async {
     try {
+      await GoogleSignIn.instance.initialize(
+        serverClientId: DefaultFirebaseOptions.serverClientId,
+      );
       final GoogleSignInAccount googleUser = await GoogleSignIn.instance
           .authenticate();
 
@@ -18,20 +21,22 @@ class AuthService {
       );
       final UserCredential credential = await FirebaseAuth.instance
           .signInWithCredential(googleCredential);
+    
       if (credential.user != null) {
-        print("Google Sign-In initiated");
-        return AppUser(
-          uid: credential.user!.uid,
-          email: credential.user!.email!,
-          displayName: credential.user!.displayName ?? "",
-          role: "user",
-          photoUrl: credential.user!.photoURL ?? "",
-        );
+        print("✅ Google Sign-In successful: ${credential.user}");
+        return true;
+        // AppUser(
+        //   uid: credential.user!.uid,
+        //   email: credential.user!.email!,
+        //   displayName: credential.user!.displayName ?? "",
+        //   role: "user",
+        //   photoUrl: credential.user!.photoURL ?? "",
+        // );
       }
-      return null;
+      return false;
     } catch (err) {
       print("❌ Google Sign-In error: $err");
-      return null;
+      return false;
     }
   }
 
