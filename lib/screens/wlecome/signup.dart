@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:player_rating/screens/onboadring/onboarding_screen.dart';
-import 'package:player_rating/services/auth_service.dart';
+import 'package:lanus_academy/screens/onboadring/onboarding_screen.dart';
+import 'package:lanus_academy/services/auth_service.dart';
 
 class SignUpFrom extends StatefulWidget {
   const SignUpFrom({super.key});

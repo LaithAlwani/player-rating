@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:player_rating/shared/image_picker_widget.dart';
+import 'package:lanus_academy/shared/image_picker_widget.dart';
 
 class OnboardingImage extends StatelessWidget {
   const OnboardingImage({super.key, required this.selectedImage});

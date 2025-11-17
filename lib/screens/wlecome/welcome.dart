@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:player_rating/screens/wlecome/signin.dart';
-import 'package:player_rating/screens/wlecome/signup.dart';
-import 'package:player_rating/services/auth_service.dart';
-import 'package:player_rating/shared/social_logins.dart';
+import 'package:lanus_academy/screens/wlecome/signin.dart';
+import 'package:lanus_academy/screens/wlecome/signup.dart';
+import 'package:lanus_academy/services/auth_service.dart';
+import 'package:lanus_academy/shared/social_logins.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});

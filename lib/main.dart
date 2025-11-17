@@ -2,12 +2,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:player_rating/firebase_options.dart';
-import 'package:player_rating/models/app_user.dart';
-import 'package:player_rating/provider/auth_provider.dart';
-import 'package:player_rating/screens/home_screen.dart';
-import 'package:player_rating/screens/profile.dart';
-import 'package:player_rating/screens/wlecome/welcome.dart';
+import 'package:lanus_academy/firebase_options.dart';
+import 'package:lanus_academy/models/app_user.dart';
+import 'package:lanus_academy/provider/auth_provider.dart';
+import 'package:lanus_academy/screens/home_screen.dart';
+import 'package:lanus_academy/screens/profile.dart';
+import 'package:lanus_academy/screens/wlecome/welcome.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Player Rating',
+      title: 'Launs Academy',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),

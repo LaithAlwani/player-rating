@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:player_rating/main.dart';
-import 'package:player_rating/models/app_user.dart';
-import 'package:player_rating/provider/auth_provider.dart';
-import 'package:player_rating/services/auth_service.dart';
-import 'package:player_rating/services/firestore_services.dart';
+import 'package:lanus_academy/main.dart';
+import 'package:lanus_academy/models/app_user.dart';
+import 'package:lanus_academy/provider/auth_provider.dart';
+import 'package:lanus_academy/services/auth_service.dart';
+import 'package:lanus_academy/services/firestore_services.dart';
 
 class Profile extends ConsumerStatefulWidget {
   const Profile({super.key, required this.user});

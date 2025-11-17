@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:player_rating/models/app_user.dart';
-import 'package:player_rating/screens/profile.dart';
-import 'package:player_rating/services/auth_service.dart';
-import 'package:player_rating/services/firestore_services.dart';
+import 'package:lanus_academy/models/app_user.dart';
+import 'package:lanus_academy/screens/profile.dart';
+import 'package:lanus_academy/services/auth_service.dart';
+import 'package:lanus_academy/services/firestore_services.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, this.user});

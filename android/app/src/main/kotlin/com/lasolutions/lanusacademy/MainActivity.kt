@@ -1,4 +1,4 @@
-package com.example.player_rating
+package com.lasolutions.lanusacademy
 
 import io.flutter.embedding.android.FlutterActivity
 

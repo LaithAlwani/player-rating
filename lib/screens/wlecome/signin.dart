@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:player_rating/services/auth_service.dart';
+import 'package:lanus_academy/services/auth_service.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({super.key});

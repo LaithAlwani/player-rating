@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:player_rating/models/app_user.dart';
+import 'package:lanus_academy/models/app_user.dart';
 
 class FirestoreService {
   static final _firestore = FirebaseFirestore.instance;

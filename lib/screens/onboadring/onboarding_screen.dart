@@ -2,14 +2,14 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:player_rating/models/app_user.dart';
-import 'package:player_rating/provider/auth_provider.dart';
-import 'package:player_rating/screens/onboadring/onboadring_name.dart';
-import 'package:player_rating/screens/onboadring/onboarding_bottom_navbar.dart';
-import 'package:player_rating/screens/onboadring/onboarding_image.dart';
-import 'package:player_rating/screens/profile.dart';
-import 'package:player_rating/services/firestore_services.dart';
-import 'package:player_rating/services/storage_service.dart';
+import 'package:lanus_academy/models/app_user.dart';
+import 'package:lanus_academy/provider/auth_provider.dart';
+import 'package:lanus_academy/screens/onboadring/onboadring_name.dart';
+import 'package:lanus_academy/screens/onboadring/onboarding_bottom_navbar.dart';
+import 'package:lanus_academy/screens/onboadring/onboarding_image.dart';
+import 'package:lanus_academy/screens/profile.dart';
+import 'package:lanus_academy/services/firestore_services.dart';
+import 'package:lanus_academy/services/storage_service.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
