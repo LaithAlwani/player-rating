@@ -72,14 +72,15 @@ class _SignInFormState extends State<SignInForm> {
 
                   final success = await AuthService.signIn(email, password);
 
-                  if (success){
-                    //show snack bar
-                  }
-                  else {
+                  if (success) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("✅ Sign-In successful")),
+                    );
+                  } else {
                     setState(() {
                       _errorFeedback = "Incorrect login credentials";
                     });
-                  } 
+                  }
                 }
               },
               child: const Text('Sign In'),

@@ -10,7 +10,7 @@ final authProvider = StreamProvider.autoDispose<AppUser?>((ref) {
       return null;
     }
     final appUser = await FirestoreService.getUserById(user.uid);
-    if (appUser == null) {
+    if (appUser == null && user.displayName != null) {
       print("❌ No AppUser found for UID: ${user.uid}");
       await FirestoreService.createUser(
         AppUser(
@@ -22,6 +22,7 @@ final authProvider = StreamProvider.autoDispose<AppUser?>((ref) {
         ),
       );
       final appUser = await FirestoreService.getUserById(user.uid);
+      print("✅ Created new AppUser for UID: ${user.displayName}");
       return appUser;
     }
     return appUser;

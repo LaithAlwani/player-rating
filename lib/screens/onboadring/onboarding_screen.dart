@@ -68,12 +68,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     try {
       await FirestoreService.createUser(user);
       final createdUser = await FirestoreService.getUserById(user.uid);
-    
+
       // ✅ Success — navigate to main layout
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => Profile(user: createdUser ?? user) ),
+        MaterialPageRoute(builder: (context) => Profile(user: createdUser!)),
       );
     } catch (e) {
       // ❌ Error — show a message
@@ -90,13 +90,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final firebaseUser = FirebaseAuth.instance.currentUser;
     return user.when(
       data: (value) {
-        if (value != null) {
-          //if the provider fetchs a user data from the users collection
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => HomeScreen(user: value)),
-          );
-        }
+        // if (value != null) {
+        //   //if the provider fetchs a user data from the users collection
+        //   Navigator.pushReplacement(
+        //     context,
+        //     MaterialPageRoute(builder: (context) => HomeScreen(user: value)),
+        //   );
+        // }
         _currentUser = firebaseUser;
         return Scaffold(
           backgroundColor: Colors.white,
