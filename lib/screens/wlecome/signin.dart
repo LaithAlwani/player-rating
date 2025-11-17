@@ -26,7 +26,9 @@ class _SignInFormState extends State<SignInForm> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // intro text
-            const Center(child: Text('تسجيل الدخول')),
+            const Center(
+              child: Text('تسجيل الدخول', style: TextStyle(fontSize: 18)),
+            ),
             const SizedBox(height: 16.0),
 
             // email address

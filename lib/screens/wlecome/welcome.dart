@@ -19,48 +19,54 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // sign up screen
-            //add logo
-            Image.asset('assets/logo.png', height: 180),
-            SizedBox(height: 24),
-            //add academy aa a title in big font
-            Text(
-              "أكاديمية لانوس",
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-            ),
-            if (isSignUpForm) const SignUpFrom() else const SignInForm(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(isSignUpForm ? "هل لديك حساب؟ " : "ليس لديك حساب؟ "),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.all(0),
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.only(top: 80, bottom: 40),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // sign up screen
+              //add logo
+              Image.asset('assets/logo.png', height: 180),
+              SizedBox(height: 24),
+              //add academy aa a title in big font
+              Text(
+                "أكاديمية لانوس",
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+              ),
+              if (isSignUpForm) const SignUpFrom() else const SignInForm(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(isSignUpForm ? "هل لديك حساب؟ " : "ليس لديك حساب؟ "),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.all(0),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        isSignUpForm = !isSignUpForm;
+                      });
+                    },
+                    child: Text(
+                      isSignUpForm ? "تسجيل دخول" : "إنشاء حساب",
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                  onPressed: () {
-                    setState(() {
-                      isSignUpForm = !isSignUpForm;
-                    });
-                  },
-                  child: Text(
-                    isSignUpForm ? "دخول" : "إنشاء حساب",
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 48),
-            SocialLoginSection(
-              onGoogle: AuthService.signInWithGoogle,
-              onApple: () {},
-            ),
-          ],
+                ],
+              ),
+              SizedBox(height: 32),
+              SocialLoginSection(
+                onGoogle: AuthService.signInWithGoogle,
+                onApple: () {},
+              ),
+            ],
+          ),
         ),
       ),
     );

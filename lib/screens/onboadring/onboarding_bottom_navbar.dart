@@ -24,21 +24,30 @@ class OnboardingBottomNavbar extends StatelessWidget {
           TextButton(
             onPressed: currentPage > 0 ? perviousPage : null,
             style: TextButton.styleFrom(
-              foregroundColor: currentPage > 0 ? Colors.blue : Colors.grey,
+              foregroundColor: currentPage > 0
+                  ? Color(0xFF37569a)
+                  : Colors.grey,
             ),
-            child: const Text("رجوع"),
+            child: const Text(
+              "رجوع",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
 
           ElevatedButton(
             onPressed: onNextPage,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.amber,
+              backgroundColor: const Color(0xFFf6ca54),
+              foregroundColor: Color(0xFF37569a),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
             ),
-            child: Text(currentPage == totalPages - 1 ? "تسجيل" : "التالي"),
+            child: Text(
+              currentPage == totalPages - 1 ? "تسجيل" : "التالي",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),

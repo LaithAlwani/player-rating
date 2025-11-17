@@ -26,7 +26,9 @@ class _SignUpFromState extends State<SignUpFrom> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             //intro text
-            const Center(child: Text("إنشاء حساب جديد")),
+            const Center(
+              child: Text("إنشاء حساب جديد", style: TextStyle(fontSize: 18)),
+            ),
             const SizedBox(height: 16),
 
             //email address
