@@ -56,20 +56,17 @@ class _ProfileState extends ConsumerState<Profile> {
           body: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Hero(
                   tag: widget.user.uid,
-                  child: CircleAvatar(
-                    radius: 60,
-                    backgroundColor: Colors.grey[200],
-                    child: ClipOval(
-                      child: Image.network(
-                        widget.user.photoUrl ?? "", // your string URL
-                        fit: BoxFit.cover, // keeps full image visible
-                        errorBuilder: (context, error, stack) =>
-                            const Icon(Icons.error, color: Colors.red),
-                      ),
+                  child: ClipOval(
+                    child: Image.network(
+                      widget.user.photoUrl ??
+                          "https://www.gravatar.com/avatar/placeholder",
+                      width: 100 * 2, // CircleAvatar radius * 2
+                      height: 100 * 2,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
@@ -129,30 +126,34 @@ class _ProfileState extends ConsumerState<Profile> {
                 ),
                 SizedBox(height: 32),
                 if (canEdit && rating != orginalRating)
-                  FilledButton(
-                    onPressed: (orginalRating != rating && !isSaving)
-                        ? () async {
-                            setState(() => isSaving = true);
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      onPressed: (orginalRating != rating && !isSaving)
+                          ? () async {
+                              setState(() => isSaving = true);
 
-                            await FirestoreService.updateUser(widget.user.uid, {
-                              "rating": rating,
-                            });
+                              await FirestoreService.updateUser(
+                                widget.user.uid,
+                                {"rating": rating},
+                              );
 
-                            setState(() {
-                              orginalRating = rating;
-                              isSaving = false;
-                            });
+                              setState(() {
+                                orginalRating = rating;
+                                isSaving = false;
+                              });
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("تم الحفظ التقيم بنجاح"),
-                              ),
-                            );
-                          }
-                        : null,
-                    child: isSaving
-                        ? const CircularProgressIndicator()
-                        : const Text("حفظ"),
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("تم الحفظ التقيم بنجاح"),
+                                ),
+                              );
+                            }
+                          : null,
+                      child: isSaving
+                          ? const CircularProgressIndicator()
+                          : const Text("حفظ"),
+                    ),
                   ),
               ],
             ),
