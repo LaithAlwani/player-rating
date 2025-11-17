@@ -86,7 +86,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           //       : null,
           // ),
           const SizedBox(height: 20),
-          const Text("Choose an Image"),
+          const Text("اختر صورة"),
         ],
       ),
     );

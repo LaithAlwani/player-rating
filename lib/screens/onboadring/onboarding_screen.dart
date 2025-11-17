@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:player_rating/models/app_user.dart';
 import 'package:player_rating/provider/auth_provider.dart';
-import 'package:player_rating/screens/home_screen.dart';
 import 'package:player_rating/screens/onboadring/onboadring_name.dart';
 import 'package:player_rating/screens/onboadring/onboarding_bottom_navbar.dart';
 import 'package:player_rating/screens/onboadring/onboarding_image.dart';

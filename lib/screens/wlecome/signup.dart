@@ -26,17 +26,17 @@ class _SignUpFromState extends State<SignUpFrom> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             //intro text
-            const Center(child: Text("signup for a new account")),
+            const Center(child: Text("إنشاء حساب جديد")),
             const SizedBox(height: 16),
 
             //email address
             TextFormField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(labelText: "Email"),
+              decoration: const InputDecoration(labelText: "بريدك الإلكتروني"),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return "please enter your email";
+                  return "الرجاء إدخال بريد إلكتروني";
                 }
                 return null;
               },
@@ -46,10 +46,10 @@ class _SignUpFromState extends State<SignUpFrom> {
             TextFormField(
               controller: _passwordController,
               obscureText: true,
-              decoration: const InputDecoration(labelText: "Password"),
+              decoration: const InputDecoration(labelText: "كلمة المرور"),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return "please enter a passowrd";
+                  return "الرجاء إدخال كلمة مرور";
                 }
                 // if (value.length < 8) {
                 //   return "Password must be 8 characters in length";
@@ -81,13 +81,13 @@ class _SignUpFromState extends State<SignUpFrom> {
                     );
                   } else {
                     setState(() {
-                      _errorFeedback = "Could not sign up";
+                      _errorFeedback = "❌ فشل إنشاء الحساب";
                     });
                   }
                 }
                 //errorr feedback
               },
-              child: const Text("Signup"),
+              child: const Text("إنشاء حساب"),
             ),
           ],
         ),

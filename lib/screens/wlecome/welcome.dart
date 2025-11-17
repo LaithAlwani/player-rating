@@ -28,11 +28,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  isSignUpForm
-                      ? "Have an account, "
-                      : "Don't have an account, ",
-                ),
+                Text(isSignUpForm ? "هل لديك حساب، " : "ليس لديك حساب، "),
                 TextButton(
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.all(0),
@@ -44,7 +40,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       isSignUpForm = !isSignUpForm;
                     });
                   },
-                  child: Text(isSignUpForm ? "Login" : "Register"),
+                  child: Text(isSignUpForm ? "دخول" : "إنشاء حساب"),
                 ),
               ],
             ),

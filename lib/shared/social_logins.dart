@@ -24,7 +24,7 @@ class SocialLoginSection extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
-                "or sign in with",
+                "أو سجل الدخول بواسطة",
                 style: TextStyle(fontSize: 14, color: Colors.grey[800]),
               ),
             ),

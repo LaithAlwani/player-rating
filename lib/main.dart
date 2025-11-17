@@ -8,6 +8,7 @@ import 'package:player_rating/provider/auth_provider.dart';
 import 'package:player_rating/screens/home_screen.dart';
 import 'package:player_rating/screens/profile.dart';
 import 'package:player_rating/screens/wlecome/welcome.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +31,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ar', ''), // Arabic
+        // Add other supported locales here
+      ],
+      locale: const Locale('ar', ''), // Force Arabic locale
       home: Consumer(
         builder: (context, ref, child) {
           final AsyncValue<AppUser?> user = ref.watch(authProvider);

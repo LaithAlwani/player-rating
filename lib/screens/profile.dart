@@ -37,7 +37,7 @@ class _ProfileState extends ConsumerState<Profile> {
         final canEdit = role == "admin";
         return Scaffold(
           appBar: AppBar(
-            title: Text("${widget.user.displayName}'s Profile"),
+            title: Text("ملف الشخصي ل${widget.user.displayName}"),
             actions: [
               IconButton(
                 onPressed: () async {
@@ -144,13 +144,15 @@ class _ProfileState extends ConsumerState<Profile> {
                             });
 
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Rating updated!")),
+                              const SnackBar(
+                                content: Text("تم الحفظ التقيم بنجاح"),
+                              ),
                             );
                           }
                         : null,
                     child: isSaving
                         ? const CircularProgressIndicator()
-                        : const Text("Save"),
+                        : const Text("حفظ"),
                   ),
               ],
             ),

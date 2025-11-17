@@ -26,7 +26,7 @@ class OnboardingBottomNavbar extends StatelessWidget {
             style: TextButton.styleFrom(
               foregroundColor: currentPage > 0 ? Colors.blue : Colors.grey,
             ),
-            child: const Text("Back"),
+            child: const Text("رجوع"),
           ),
 
           ElevatedButton(
@@ -38,7 +38,7 @@ class OnboardingBottomNavbar extends StatelessWidget {
               ),
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
             ),
-            child: Text(currentPage == totalPages - 1 ? "Finish" : "Next"),
+            child: Text(currentPage == totalPages - 1 ? "تسجيل" : "التالي"),
           ),
         ],
       ),

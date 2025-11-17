@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class OnboadringName extends StatelessWidget {
@@ -13,15 +12,14 @@ class OnboadringName extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
-            "What's your display name?",
+            "إدخل اسم العرض الخاص بك",
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 24),
           TextField(
-            
             controller: nameController,
             decoration: const InputDecoration(
-              labelText: "Display Name",
+              labelText: "اسم العرض",
               border: OutlineInputBorder(),
             ),
           ),

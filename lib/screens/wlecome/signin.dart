@@ -26,17 +26,17 @@ class _SignInFormState extends State<SignInForm> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // intro text
-            const Center(child: Text('Sign in to your account.')),
+            const Center(child: Text('تسجيل الدخول')),
             const SizedBox(height: 16.0),
 
             // email address
             TextFormField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: 'بريدك الإلكتروني'),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return "please enter a email";
+                  return "الرجاء إدخال بريد إلكتروني";
                 }
                 return null;
               },
@@ -47,10 +47,10 @@ class _SignInFormState extends State<SignInForm> {
             TextFormField(
               controller: _passwordController,
               obscureText: true,
-              decoration: const InputDecoration(labelText: 'Password'),
+              decoration: const InputDecoration(labelText: 'كلمة المرور'),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return "please enter a passowrd";
+                  return "الرجاء إدخال كلمة مرور";
                 }
                 return null;
               },
@@ -74,16 +74,16 @@ class _SignInFormState extends State<SignInForm> {
 
                   if (success) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("✅ Sign-In successful")),
+                      const SnackBar(content: Text("✅ تم تسجيل الدخول بنجاح")),
                     );
                   } else {
                     setState(() {
-                      _errorFeedback = "Incorrect login credentials";
+                      _errorFeedback = "❌ بيانات تسجيل الدخول غير صحيحة";
                     });
                   }
                 }
               },
-              child: const Text('Sign In'),
+              child: const Text('تسجيل الدخول'),
             ),
             // TextButton(
             //   onPressed: () async {

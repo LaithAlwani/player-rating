@@ -18,7 +18,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _playersFuture = FirestoreService.fethcAllUsers();
     super.initState();
   }
@@ -33,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Player Ratings"),
+        title: Text("تقييم اللاعبين"),
         actions: [
           IconButton(
             onPressed: () async {
@@ -52,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
           } else if (snapshot.hasError) {
             return Center(child: Text("Error: ${snapshot.error}"));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text("No players found."));
+            return const Center(child: Text("لا يوجد لاعبين حاليا"));
           } else {
             final players = snapshot.data!;
             return RefreshIndicator(
@@ -75,7 +74,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         tag: player.uid,
                         child: CircleAvatar(
                           backgroundImage: NetworkImage(
-                            player.photoUrl ?? "dummyProfilePic",
+                            player.photoUrl ??
+                                "https://www.gravatar.com/avatar/placeholder",
                           ),
                         ),
                       ),

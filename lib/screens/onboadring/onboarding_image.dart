@@ -14,7 +14,7 @@ class OnboardingImage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
-            "add a profile photo?",
+            "اختر صورة ملف شخصي",
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 24),
