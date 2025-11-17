@@ -37,6 +37,12 @@ class _ProfileState extends ConsumerState<Profile> {
         final canEdit = role == "admin";
         return Scaffold(
           appBar: AppBar(
+            leading: Navigator.canPop(context)
+                ? null // default back button
+                : Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset('assets/logo.png'),
+                  ),
             title: Text("ملف الشخصي ل${widget.user.displayName}"),
             actions: [
               IconButton(
@@ -124,7 +130,7 @@ class _ProfileState extends ConsumerState<Profile> {
                       ),
                   ],
                 ),
-                SizedBox(height: 32),
+                Expanded(child: SizedBox()),
                 if (canEdit && rating != orginalRating)
                   SizedBox(
                     width: double.infinity,

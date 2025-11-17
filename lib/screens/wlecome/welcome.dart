@@ -24,11 +24,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // sign up screen
+            //add logo
+            Image.asset('assets/logo.png', height: 180),
+            SizedBox(height: 24),
+            //add academy aa a title in big font
+            Text(
+              "أكاديمية لانوس",
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            ),
             if (isSignUpForm) const SignUpFrom() else const SignInForm(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(isSignUpForm ? "هل لديك حساب، " : "ليس لديك حساب، "),
+                Text(isSignUpForm ? "هل لديك حساب؟ " : "ليس لديك حساب؟ "),
                 TextButton(
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.all(0),
@@ -40,7 +48,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       isSignUpForm = !isSignUpForm;
                     });
                   },
-                  child: Text(isSignUpForm ? "دخول" : "إنشاء حساب"),
+                  child: Text(
+                    isSignUpForm ? "دخول" : "إنشاء حساب",
+                    style: TextStyle(color: Colors.blue),
+                  ),
                 ),
               ],
             ),

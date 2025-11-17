@@ -32,7 +32,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("تقييم اللاعبين"),
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset('assets/logo.png'),
+        ),
+        title: Text("قائمة اللاعبين"),
         actions: [
           IconButton(
             onPressed: () async {
