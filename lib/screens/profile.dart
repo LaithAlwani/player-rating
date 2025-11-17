@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:player_rating/main.dart';
 import 'package:player_rating/models/app_user.dart';
 import 'package:player_rating/provider/auth_provider.dart';
 import 'package:player_rating/services/auth_service.dart';
@@ -41,6 +42,12 @@ class _ProfileState extends ConsumerState<Profile> {
               IconButton(
                 onPressed: () async {
                   await AuthService.signOut();
+                  if (context.mounted) {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (_) => MyApp()),
+                      (route) => false,
+                    );
+                  }
                 },
                 icon: const Icon(Icons.logout),
               ),
@@ -54,8 +61,16 @@ class _ProfileState extends ConsumerState<Profile> {
                 Hero(
                   tag: widget.user.uid,
                   child: CircleAvatar(
-                    backgroundImage: NetworkImage(widget.user.photoUrl ?? ""),
-                    radius: 100,
+                    radius: 60,
+                    backgroundColor: Colors.grey[200],
+                    child: ClipOval(
+                      child: Image.network(
+                        widget.user.photoUrl ?? "", // your string URL
+                        fit: BoxFit.cover, // keeps full image visible
+                        errorBuilder: (context, error, stack) =>
+                            const Icon(Icons.error, color: Colors.red),
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(height: 32),
