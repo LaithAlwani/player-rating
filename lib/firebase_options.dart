@@ -48,7 +48,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBV3n8b45oP91UsDJmYdvOmtjg2E8AGrko',
-    appId: '1:709025605105:android:84dc4baf3fcee989eb9050',
+    appId: '1:709025605105:android:6fb9354ccb7283deeb9050',
     messagingSenderId: '709025605105',
     projectId: 'player-rating-e8977',
     storageBucket: 'player-rating-e8977.firebasestorage.app',
@@ -56,15 +56,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyB-qQbu44KN9hZC7ETyC88g8oujVKWMLik',
-    appId: '1:709025605105:ios:7d54df9208d22b13eb9050',
+    appId: '1:709025605105:ios:588753cea784eb76eb9050',
     messagingSenderId: '709025605105',
     projectId: 'player-rating-e8977',
     storageBucket: 'player-rating-e8977.firebasestorage.app',
-    androidClientId:
-        '709025605105-gtfalfkbamshnsalkj6g8ks9gl0gpim4.apps.googleusercontent.com',
-    iosClientId:
-        '709025605105-l1ujpi5387rigmm3qc6o4is33eha7on4.apps.googleusercontent.com',
-    iosBundleId: 'com.example.playerRating',
+    androidClientId: '709025605105-gtfalfkbamshnsalkj6g8ks9gl0gpim4.apps.googleusercontent.com',
+    iosClientId: '709025605105-3v7pd0rl0dpfe478jhn6ool3rjcbl1hl.apps.googleusercontent.com',
+    iosBundleId: 'com.lasolutions.lanusacademy',
   );
 
   static const FirebaseOptions web = FirebaseOptions(
