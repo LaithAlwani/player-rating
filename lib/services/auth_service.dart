@@ -25,13 +25,6 @@ class AuthService {
       if (credential.user != null) {
         print("✅ Google Sign-In successful: ${credential.user}");
         return true;
-        // AppUser(
-        //   uid: credential.user!.uid,
-        //   email: credential.user!.email!,
-        //   displayName: credential.user!.displayName ?? "",
-        //   role: "user",
-        //   photoUrl: credential.user!.photoURL ?? "",
-        // );
       }
       return false;
     } catch (err) {

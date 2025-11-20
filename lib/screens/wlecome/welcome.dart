@@ -34,6 +34,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("فشل تسجيل الدخول: $e")));
+    } finally {
+      setState(() {
+        isSocialLoginLoading = false;
+      });
     }
   }
 

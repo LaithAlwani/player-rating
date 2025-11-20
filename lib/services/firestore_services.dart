@@ -67,6 +67,17 @@ class FirestoreService {
         );
   }
 
+  static Stream<List<AppUser>> searchUsersByName(String username) {
+    return _userRef
+        .where("displayName", isGreaterThanOrEqualTo: username)
+        .limit(10)
+        .snapshots()
+        .map(
+          (querySnapshot) =>
+              querySnapshot.docs.map((doc) => doc.data()).toList(),
+        );
+  }
+
   /// Stream of user updates (for real-time profile changes)
   static Stream<AppUser?> streamUser(String uid) {
     return _userRef.doc(uid).snapshots().map((snapshot) {

@@ -44,7 +44,6 @@ class MyApp extends StatelessWidget {
       home: Consumer(
         builder: (context, ref, child) {
           final AsyncValue<AppUser?> user = ref.watch(authProvider);
-
           return user.when(
             data: (value) {
               if (value == null) return const WelcomeScreen();
