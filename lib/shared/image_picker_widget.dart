@@ -1,6 +1,7 @@
 import 'dart:io';
-
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 
 class ImagePickerWidget extends StatefulWidget {
@@ -17,16 +18,40 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
   File? _selectedImageFile;
 
   Future<void> _pickImage(ImageSource source) async {
-    final pickedFile = await _picker.pickImage(
-      source: source,
-      imageQuality: 75,
+    final pickedFile = await _picker.pickImage(source: source);
+
+    if (pickedFile == null) return;
+
+    // Read the original image bytes
+    final originalBytes = await pickedFile.readAsBytes();
+
+    // Decode the image for processing
+    img.Image? decodedImage = img.decodeImage(originalBytes);
+    if (decodedImage == null) return;
+
+    // Resize the image to about 300px width (great for avatars)
+    img.Image resized = img.copyResize(decodedImage, width: 200);
+
+    // Compress resized image to ~80% quality
+    final resizedBytes = Uint8List.fromList(
+      img.encodeJpg(resized, quality: 80),
     );
-    if (pickedFile != null) {
-      widget.onImageSelected(File(pickedFile.path));
-      setState(() {
-        _selectedImageFile = File(pickedFile.path);
-      });
-    }
+
+    // Create a temporary file
+    final tempDir = Directory.systemTemp;
+    final resizedFile = File(
+      '${tempDir.path}/resized_${DateTime.now().millisecondsSinceEpoch}.jpg',
+    );
+
+    // Write the compressed bytes into the file
+    await resizedFile.writeAsBytes(resizedBytes);
+
+    // Return the final small image file
+    widget.onImageSelected(resizedFile);
+
+    setState(() {
+      _selectedImageFile = resizedFile;
+    });
   }
 
   void _showImagePickerOptions() {

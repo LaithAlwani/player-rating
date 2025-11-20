@@ -7,6 +7,7 @@ class AuthService {
   // google login
   static Future<bool> signInWithGoogle() async {
     try {
+      print(DefaultFirebaseOptions.serverClientId);
       await GoogleSignIn.instance.initialize(
         serverClientId: DefaultFirebaseOptions.serverClientId,
       );
@@ -20,7 +21,7 @@ class AuthService {
       );
       final UserCredential credential = await FirebaseAuth.instance
           .signInWithCredential(googleCredential);
-    
+
       if (credential.user != null) {
         print("✅ Google Sign-In successful: ${credential.user}");
         return true;
