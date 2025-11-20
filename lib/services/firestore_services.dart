@@ -70,6 +70,7 @@ class FirestoreService {
   static Stream<List<AppUser>> searchUsersByName(String username) {
     return _userRef
         .where("displayName", isGreaterThanOrEqualTo: username)
+        .orderBy("rating", descending: true)
         .limit(10)
         .snapshots()
         .map(
