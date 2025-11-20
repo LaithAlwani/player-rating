@@ -25,6 +25,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   int _currentPage = 0;
   final TextEditingController _nameController = TextEditingController();
   File? _selectedImageFile;
+  bool isLoading = false;
 
   void _nextPage() {
     if (_currentPage < _totalPages - 1) {
@@ -47,6 +48,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   void _submitOnboarding() async {
+    setState(() {
+      isLoading = true;
+    });
     String? imageUrl;
     // Save user data (to Firestore, local storage, etc.)
     debugPrint("Name: ${_nameController.text}");
@@ -70,6 +74,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
       // ✅ Success — navigate to main layout
       if (!mounted) return;
+      //show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("✅ تم إنشاء المستخدم بنجاح")),
+      );
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => Profile(user: createdUser!)),
@@ -80,6 +88,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("Failed to create user: $e")));
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -89,13 +101,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final firebaseUser = FirebaseAuth.instance.currentUser;
     return user.when(
       data: (value) {
-        // if (value != null) {
-        //   //if the provider fetchs a user data from the users collection
-        //   Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => HomeScreen(user: value)),
-        //   );
-        // }
         _currentUser = firebaseUser;
         return Scaffold(
           backgroundColor: Colors.white,
@@ -123,6 +128,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   currentPage: _currentPage,
                   perviousPage: _previousPage,
                   onNextPage: _nextPage,
+                  isLoading: isLoading,
                 ),
               ],
             ),

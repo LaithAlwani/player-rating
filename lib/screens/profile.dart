@@ -64,14 +64,15 @@ class _ProfileState extends ConsumerState<Profile> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                SizedBox(height: 32),
                 Hero(
                   tag: widget.user.uid,
                   child: ClipOval(
                     child: Image.network(
                       widget.user.photoUrl ??
                           "https://www.gravatar.com/avatar/placeholder",
-                      width: 100 * 2, // CircleAvatar radius * 2
-                      height: 100 * 2,
+                      width: 60 * 2, // CircleAvatar radius * 2
+                      height: 60 * 2,
                       fit: BoxFit.cover,
                     ),
                   ),

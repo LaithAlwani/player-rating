@@ -7,12 +7,14 @@ class OnboardingBottomNavbar extends StatelessWidget {
     required this.currentPage,
     required this.perviousPage,
     required this.onNextPage,
+    required this.isLoading,
   });
 
   final int totalPages;
   final int currentPage;
   final VoidCallback perviousPage;
   final VoidCallback onNextPage;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -34,19 +36,28 @@ class OnboardingBottomNavbar extends StatelessWidget {
             ),
           ),
 
-          ElevatedButton(
-            onPressed: onNextPage,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFf6ca54),
-              foregroundColor: Color(0xFF37569a),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+          SizedBox(
+            height: 48,
+            width: 120,
+            child: ElevatedButton(
+              onPressed: onNextPage,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFf6ca54),
+                foregroundColor: Color(0xFF37569a),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-            ),
-            child: Text(
-              currentPage == totalPages - 1 ? "تسجيل" : "التالي",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              child: isLoading
+                  ? CircularProgressIndicator()
+                  : Text(
+                      currentPage == totalPages - 1 ? "تسجيل" : "التالي",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
             ),
           ),
         ],

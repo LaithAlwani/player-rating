@@ -30,7 +30,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
     if (decodedImage == null) return;
 
     // Resize the image to about 300px width (great for avatars)
-    img.Image resized = img.copyResize(decodedImage, width: 200);
+    img.Image resized = img.copyResize(decodedImage, width: 300);
 
     // Compress resized image to ~80% quality
     final resizedBytes = Uint8List.fromList(

@@ -13,62 +13,95 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
   bool isSignUpForm = false;
+  bool isSocialLoginLoading = false;
+
+  Future<void> _handleSocialLogin() async {
+    setState(() {
+      isSocialLoginLoading = true;
+    });
+    try {
+      final user = await AuthService.signInWithGoogle();
+      if (user) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("✅ تم تسجيل الدخول بنجاح")),
+        );
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("❌ فشل تسجيل الدخول")));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("فشل تسجيل الدخول: $e")));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(top: 80, bottom: 40),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // sign up screen
-              //add logo
-              Image.asset('assets/logo.png', height: 180),
-              SizedBox(height: 24),
-              //add academy aa a title in big font
-              Text(
-                "أكاديمية لانوس",
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-              ),
-              if (isSignUpForm) const SignUpFrom() else const SignInForm(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(isSignUpForm ? "هل لديك حساب؟ " : "ليس لديك حساب؟ "),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.all(0),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        isSignUpForm = !isSignUpForm;
-                      });
-                    },
-                    child: Text(
-                      isSignUpForm ? "تسجيل دخول" : "إنشاء حساب",
+    return isSocialLoginLoading
+        ? Scaffold(body: Center(child: CircularProgressIndicator()))
+        : Scaffold(
+            body: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.only(top: 80, bottom: 40),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // sign up screen
+                    //add logo
+                    Image.asset('assets/logo.png', height: 180),
+                    SizedBox(height: 24),
+                    //add academy aa a title in big font
+                    Text(
+                      "أكاديمية لانوس",
                       style: TextStyle(
-                        color: Colors.blue,
+                        fontSize: 32,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                ],
+                    if (isSignUpForm)
+                      const SignUpFrom()
+                    else
+                      const SignInForm(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          isSignUpForm ? "هل لديك حساب؟ " : "ليس لديك حساب؟ ",
+                        ),
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.all(0),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              isSignUpForm = !isSignUpForm;
+                            });
+                          },
+                          child: Text(
+                            isSignUpForm ? "تسجيل دخول" : "إنشاء حساب",
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 32),
+                    SocialLoginSection(
+                      onGoogle: _handleSocialLogin,
+                      onApple: () {},
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: 32),
-              SocialLoginSection(
-                onGoogle: AuthService.signInWithGoogle,
-                onApple: () {},
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 }
