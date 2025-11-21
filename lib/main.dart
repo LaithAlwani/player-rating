@@ -1,3 +1,4 @@
+import 'package:arabic_font/arabic_font.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,6 +31,8 @@ class MyApp extends StatelessWidget {
       title: 'Launs Academy',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF37569a)),
+        fontFamily: ArabicThemeData.font(arabicFont: ArabicFont.dubai),
+        package: ArabicThemeData.package,
       ),
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

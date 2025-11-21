@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class AppUser {
   AppUser({
     required this.uid,
     required this.displayName,
+    required this.displayNameLower,
     required this.email,
     this.rating = 0,
     this.photoUrl,
@@ -12,10 +12,11 @@ class AppUser {
     this.role = "user",
     Timestamp? createdAt,
     Timestamp? updatedAt,
-  })  : createdAt = createdAt ?? Timestamp.now(),
-        updatedAt = updatedAt ?? Timestamp.now();
+  }) : createdAt = createdAt ?? Timestamp.now(),
+       updatedAt = updatedAt ?? Timestamp.now();
   final String uid;
   final String displayName;
+  final String displayNameLower;
   final String email;
   final String? photoUrl;
   final int? rating;
@@ -23,9 +24,6 @@ class AppUser {
   final String role;
   final Timestamp createdAt;
   final Timestamp updatedAt;
-
-
-
 
   // ---------- Serialization ----------
 
@@ -36,11 +34,12 @@ class AppUser {
     final data = snapshot.data()!;
 
     return AppUser(
-      uid: snapshot.id ,
+      uid: snapshot.id,
       displayName: data['displayName'],
+      displayNameLower: data['displayNameLower'],
       email: data['email'],
       photoUrl: data['photoUrl'],
-      rating: data['rating'] ,
+      rating: data['rating'],
       isVerified: data['isVerified'] ?? false,
       role: data['role'] ?? 'user',
       createdAt: data['createdAt'] ?? Timestamp.now(),
@@ -52,9 +51,10 @@ class AppUser {
     return {
       'uid': uid,
       'displayName': displayName,
+      'displayNameLower': displayNameLower,
       'email': email,
       'photoUrl': photoUrl,
-      'rating': rating, 
+      'rating': rating,
       'isVerified': isVerified,
       'role': role,
       'createdAt': createdAt,
@@ -65,6 +65,7 @@ class AppUser {
   AppUser copyWith({
     String? uid,
     String? displayName,
+    String? displayNameLower,
     String? email,
     String? photoUrl,
     int? rating,
@@ -75,6 +76,7 @@ class AppUser {
     return AppUser(
       uid: uid ?? this.uid,
       displayName: displayName ?? this.displayName,
+      displayNameLower: displayNameLower ?? this.displayNameLower,
       email: email ?? this.email,
       photoUrl: photoUrl ?? this.photoUrl,
       rating: rating ?? this.rating,
@@ -85,4 +87,3 @@ class AppUser {
     );
   }
 }
-

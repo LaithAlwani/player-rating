@@ -19,6 +19,7 @@ class HomeScreen extends StatelessWidget {
         builder: (context, vm, _) {
           return Scaffold(
             appBar: AppBar(
+              leading: Image.asset("./assets/logo.png"),
               title: Text("قائمة اللاعبين"),
               actions: [
                 IconButton(

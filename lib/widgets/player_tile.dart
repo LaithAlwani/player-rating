@@ -21,11 +21,7 @@ class PlayerTile extends StatelessWidget {
       ),
       title: Text(
         player.displayName,
-        style: const TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-          fontFamily: 'Roboto',
-        ),
+        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
       ),
       subtitle: Text(
         player.email,
@@ -33,6 +29,7 @@ class PlayerTile extends StatelessWidget {
           fontStyle: FontStyle.italic,
           fontWeight: FontWeight.w400,
           fontSize: 12,
+          fontFamily: 'Roboto',
         ),
       ),
       trailing: Text("${player.rating}", style: const TextStyle(fontSize: 18)),

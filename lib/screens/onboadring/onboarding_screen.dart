@@ -65,6 +65,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       uid: _currentUser!.uid,
       email: _currentUser!.email!,
       displayName: _nameController.text,
+      displayNameLower: _nameController.text.toLowerCase(),
       photoUrl: imageUrl,
     );
 

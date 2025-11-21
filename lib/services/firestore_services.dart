@@ -71,7 +71,7 @@ class FirestoreService {
     return _userRef
         // .where("displayName", isGreaterThanOrEqualTo: username)
         .where("role", isNotEqualTo: "admin")
-        .orderBy("displayName")
+        .orderBy("displayNameLower")
         .startAt([username])
         .endAt(["$username\uf8ff"])
         .limit(10)

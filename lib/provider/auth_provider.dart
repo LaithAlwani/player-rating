@@ -17,6 +17,7 @@ final authProvider = StreamProvider.autoDispose<AppUser?>((ref) {
           uid: user.uid,
           email: user.email ?? "",
           displayName: user.displayName ?? "",
+          displayNameLower:(user.displayName ?? "").toLowerCase() ,
           role: "user",
           photoUrl: user.photoURL ?? "",
         ),
