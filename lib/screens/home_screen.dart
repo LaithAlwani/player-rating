@@ -37,10 +37,23 @@ class HomeScreen extends StatelessWidget {
                     vertical: 16,
                     horizontal: 24,
                   ),
-                  child: SearchBar(
-                    leading: Icon(Icons.search),
-                    hintText: "ابحث عن اسم لاعب...",
-                    onSubmitted: vm.searchPlayers,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: Colors.grey, width: 1),
+                      ),
+                    ),
+                    child: SearchBar(
+                      leading: Icon(Icons.search),
+                      hintText: "ابحث عن اسم لاعب...",
+                      backgroundColor: WidgetStatePropertyAll(
+                        Colors.transparent,
+                      ),
+                      shadowColor: WidgetStatePropertyAll(Colors.transparent),
+                      overlayColor: WidgetStatePropertyAll(Colors.transparent),
+
+                      onSubmitted: vm.searchPlayers,
+                    ),
                   ),
                 ),
 
