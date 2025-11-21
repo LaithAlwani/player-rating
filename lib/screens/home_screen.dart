@@ -1,141 +1,97 @@
 import 'package:flutter/material.dart';
-import 'package:lanus_academy/models/app_user.dart';
+import 'package:lanus_academy/provider/auth_provider.dart';
 import 'package:lanus_academy/screens/profile.dart';
 import 'package:lanus_academy/services/auth_service.dart';
-import 'package:lanus_academy/services/firestore_services.dart';
+import 'package:lanus_academy/viewmodels/home_viewmodel.dart';
+import 'package:lanus_academy/models/app_user.dart';
+import 'package:lanus_academy/widgets/player_tile.dart';
+import 'package:lanus_academy/widgets/confirm_delete_dialog.dart';
+import 'package:provider/provider.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, this.user});
-
-  final AppUser? user;
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  late Stream<List<AppUser>> _playersFuture;
-
-  @override
-  void initState() {
-    _playersFuture = FirestoreService.fethcAllUsers();
-    super.initState();
-  }
-
-  Future<void> _refreshPlayers() async {
-    setState(() {
-      _playersFuture = FirestoreService.fethcAllUsers();
-    });
-  }
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Image.asset('assets/logo.png'),
-        ),
-        title: Text("قائمة اللاعبين"),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              await AuthService.signOut();
-              // Navigator.pop(context);
-            },
-            icon: const Icon(Icons.logout),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SearchBar(
-              hintText: "ابحث عن لاعب...",
-              shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-              onSubmitted: (value) {
-                setState(() {
-                  if (value.isEmpty) {
-                    _playersFuture = FirestoreService.fethcAllUsers();
-                    return;
-                  }
-                  _playersFuture = FirestoreService.searchUsersByName(value);
-                  print("Search query: $value");
-                });
-              },
+    return ChangeNotifierProvider(
+      create: (_) => HomeViewmodel(),
+      child: Consumer<HomeViewmodel>(
+        builder: (context, vm, _) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text("قائمة اللاعبين"),
+              actions: [
+                IconButton(
+                  onPressed: () async {
+                    await AuthService.signOut();
+                  },
+                  icon: const Icon(Icons.logout),
+                ),
+              ],
             ),
-          ),
-          Expanded(
-            child: StreamBuilder<List<AppUser>>(
-              stream: _playersFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text("Error: ${snapshot.error}"));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text("لا يوجد لاعبين حاليا"));
-                } else {
-                  final players = snapshot.data!;
-                  return RefreshIndicator(
-                    onRefresh: _refreshPlayers,
-                    child: ListView.builder(
-                      itemCount: players.length,
-                      itemBuilder: (context, index) {
-                        final player = players[index];
-                        return InkWell(
-                          onTap: () => {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => Profile(user: player),
+            body: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 24,
+                  ),
+                  child: SearchBar(
+                    leading: Icon(Icons.search),
+                    hintText: "ابحث عن اسم لاعب...",
+                    onSubmitted: vm.searchPlayers,
+                  ),
+                ),
+
+                Expanded(
+                  child: StreamBuilder<List<AppUser>>(
+                    stream: vm.playersStream,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      final players = snapshot.data!;
+
+                      return RefreshIndicator(
+                        onRefresh: () async => vm.refreshPlayers(),
+                        child: ListView.builder(
+                          itemCount: players.length,
+                          itemBuilder: (context, index) {
+                            final player = players[index];
+
+                            return Dismissible(
+                              key: Key(player.uid),
+                              direction: DismissDirection.endToStart,
+                              confirmDismiss: (dir) async {
+                                return await showConfirmDeleteDialog(
+                                  context,
+                                  player.displayName,
+                                );
+                              },
+                              child: PlayerTile(
+                                player: player,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          Profile(user: player),
+                                    ),
+                                  );
+                                },
                               ),
-                            ),
+                            );
                           },
-                          child: ListTile(
-                            leading: Hero(
-                              tag: player.uid,
-                              child: CircleAvatar(
-                                radius: 25,
-                                backgroundImage: NetworkImage(
-                                  player.photoUrl ??
-                                      "https://www.gravatar.com/avatar/placeholder",
-                                ),
-                              ),
-                            ),
-                            title: Text(
-                              player.displayName,
-                              style: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Roboto',
-                              ),
-                            ),
-                            subtitle: Text(
-                              player.email,
-                              style: TextStyle(
-                                fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                              ),
-                            ),
-                            trailing: Text(
-                              "${player.rating}",
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                }
-              },
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

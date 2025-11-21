@@ -149,6 +149,9 @@ class _ProfileState extends ConsumerState<Profile> {
                                 orginalRating = rating;
                                 isSaving = false;
                               });
+                              if (mounted) {
+                                Navigator.of(context).pop();
+                              }
 
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(

@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
               if (value.role != "admin") {
                 return Profile(user: value);
               }
-              return HomeScreen(user: value);
+              return HomeScreen();
             },
             error: (error, stack) =>
                 Center(child: Text("Error loading auth status: $error")),
