@@ -21,6 +21,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     });
     try {
       final user = await AuthService.signInWithGoogle();
+      if (!mounted) return;
       if (user) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("✅ تم تسجيل الدخول بنجاح")),
@@ -31,9 +32,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         ).showSnackBar(const SnackBar(content: Text("❌ فشل تسجيل الدخول")));
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text("فشل تسجيل الدخول: $e")));
+      ).showSnackBar(SnackBar(content: Text("❌ فشل تسجيل الدخول: $e")));
     } finally {}
   }
 

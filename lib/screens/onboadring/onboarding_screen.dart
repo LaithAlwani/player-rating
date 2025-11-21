@@ -87,7 +87,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text("Failed to create user: $e")));
+      ).showSnackBar(SnackBar(content: Text("❌ فشل إنشاء المستخدم: $e")));
     } finally {
       setState(() {
         isLoading = false;

@@ -152,7 +152,7 @@ class _ProfileState extends ConsumerState<Profile> {
 
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text(" تم حفظ التقييم بنجاح"),
+                                  content: Text("✅ تم حفظ التقييم بنجاح"),
                                 ),
                               );
                             }
