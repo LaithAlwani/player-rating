@@ -103,42 +103,11 @@ class FirestoreService {
     return query.get();
   }
 
-  static Stream<List<AppUser>> searchUsersByName(String username) {
-    return _userRef
-        // .where("displayName", isGreaterThanOrEqualTo: username)
-        .where("role", isNotEqualTo: "admin")
-        .orderBy("displayNameLower")
-        .startAt([username])
-        .endAt(["$username\uf8ff"])
-        .limit(10)
-        .snapshots()
-        .map(
-          (querySnapshot) =>
-              querySnapshot.docs.map((doc) => doc.data()).toList(),
-        );
-  }
-
-  /// Stream of user updates (for real-time profile changes)
-  static Stream<AppUser?> streamUser(String uid) {
+  // Stream of user updates (for real-time profile changes)
+  static Stream<AppUser?> listenToUser(String uid) {
     return _userRef.doc(uid).snapshots().map((snapshot) {
       if (!snapshot.exists) return null;
       return snapshot.data();
     });
   }
-
-  // static final recipeRef = FirebaseFirestore.instance
-  //     .collection("recipes")
-  //     .withConverter(
-  //       fromFirestore: Recipe.fromFirestore,
-  //       toFirestore: (Recipe recipe, _) => recipe.toMap(),
-  //     );
-
-  // static Future<List<Recipe>> getRecipesByCreatedBy(String uid) async {
-  //   final snapshot = await recipeRef
-  //       .where('created_by', isEqualTo: uid)
-  //       .orderBy('created_at', descending: true)
-  //       .get();
-
-  //   return snapshot.docs.map((doc) => doc.data()).toList();
-  // }
 }
