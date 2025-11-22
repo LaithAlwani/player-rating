@@ -67,6 +67,42 @@ class FirestoreService {
         );
   }
 
+  static Future<QuerySnapshot<AppUser>> fetchUsersPage({
+    DocumentSnapshot<AppUser>? lastDoc,
+    int limit = 20,
+  }) {
+    Query<AppUser> query = _userRef
+        .where("role", isNotEqualTo: "admin")
+        .orderBy("role")
+        .orderBy("rating", descending: true)
+        .limit(limit);
+
+    if (lastDoc != null) {
+      query = query.startAfterDocument(lastDoc);
+    }
+
+    return query.get();
+  }
+
+  static Future<QuerySnapshot<AppUser>> searchUsersPage({
+    required String queryText,
+    DocumentSnapshot<AppUser>? lastDoc,
+    int limit = 10,
+  }) {
+    Query<AppUser> query = _userRef
+        .where("role", isNotEqualTo: "admin")
+        .orderBy("displayNameLower")
+        .startAt([queryText])
+        .endAt(["$queryText\uf8ff"])
+        .limit(limit);
+
+    if (lastDoc != null) {
+      query = query.startAfterDocument(lastDoc);
+    }
+
+    return query.get();
+  }
+
   static Stream<List<AppUser>> searchUsersByName(String username) {
     return _userRef
         // .where("displayName", isGreaterThanOrEqualTo: username)

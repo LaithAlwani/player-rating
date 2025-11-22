@@ -57,7 +57,9 @@ class MyApp extends StatelessWidget {
             },
             error: (error, stack) =>
                 Center(child: Text("Error loading auth status: $error")),
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            ),
           );
         },
       ),
