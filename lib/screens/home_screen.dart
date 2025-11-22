@@ -48,7 +48,10 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context, vm, _) {
           return Scaffold(
             appBar: AppBar(
-              leading: Image.asset("./assets/logo.png"),
+              leading: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset('assets/logo.png'),
+              ),
               title: const Text("قائمة اللاعبين"),
               actions: [
                 IconButton(

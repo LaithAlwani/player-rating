@@ -43,7 +43,7 @@ class _ProfileState extends ConsumerState<Profile> {
                     padding: const EdgeInsets.all(8.0),
                     child: Image.asset('assets/logo.png'),
                   ),
-            title: Text("ملف الشخصي ل${widget.user.displayName}"),
+            title: Text("ملف الشخصي"),
             actions: [
               IconButton(
                 onPressed: () async {
@@ -59,82 +59,134 @@ class _ProfileState extends ConsumerState<Profile> {
               ),
             ],
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+          body: Center(
+            child: Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
               children: [
+                Transform.translate(
+                  offset: Offset(0, -50),
+                  child: Image.asset("assets/player_card_gold.png"),
+                ),
                 SizedBox(height: 32),
-                Hero(
-                  tag: widget.user.uid,
-                  child: ClipOval(
-                    child: Image.network(
-                      widget.user.photoUrl ??
-                          "https://www.gravatar.com/avatar/placeholder",
-                      width: 60 * 2, // CircleAvatar radius * 2
-                      height: 60 * 2,
-                      fit: BoxFit.cover,
+                Positioned(
+                  top: 30,
+                  right: 60,
+                  child: Hero(
+                    tag: widget.user.uid,
+                    child: ClipOval(
+                      child: Image.network(
+                        widget.user.photoUrl ??
+                            "https://www.gravatar.com/avatar/placeholder",
+                        width: 60 * 2, // CircleAvatar radius * 2
+                        height: 60 * 2,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
-                SizedBox(height: 32),
-                Text(
-                  widget.user.displayName,
-                  style: const TextStyle(fontSize: 36),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  widget.user.email,
-                  style: const TextStyle(fontSize: 18),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 32),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    if (canEdit)
-                      ElevatedButton(
-                        onPressed: () {
-                          (rating != orginalRating)
-                              ? setState(() {
-                                  rating -= 1;
-                                })
-                              : null;
-                          // add points to current player
-                        },
-                        style: ButtonStyle(
-                          backgroundColor:
-                              WidgetStateProperty.resolveWith<Color?>((
-                                Set<WidgetState> states,
-                              ) {
-                                if (rating == orginalRating) {
-                                  return Colors.grey;
-                                }
-                                return null; // Use the component's default.
-                              }),
-                        ),
-                        child: const Icon(Icons.remove),
-                      ),
-                    Text(
-                      (rating).toString(),
-                      style: const TextStyle(fontSize: 32),
+                Positioned(
+                  top: 230,
+                  child: Text(
+                    widget.user.displayName,
+                    style: const TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                      // color: Colors.white,
                     ),
-                    if (canEdit)
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            rating += 1;
-                          });
-                          // add points to current player
-                        },
-                        child: const Icon(Icons.add),
-                      ),
-                  ],
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-                Expanded(child: SizedBox()),
+                Positioned(
+                  top: 280,
+                  child: Text(
+                    widget.user.email,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      // color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Positioned(
+                  top: 50,
+                  left: 85,
+                  child: Text(
+                    "مهاجم",
+                    style: const TextStyle(
+                      fontSize: 18,
+                      // color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Positioned(
+                  top: 100,
+                  left: 60,
+                  child: Text(
+                    "آخر تاريخ دخول",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      // color: Colors.white,
+                      // fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+
+                Positioned(
+                  bottom: 150,
+                  width: 300,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      if (canEdit)
+                        ElevatedButton(
+                          onPressed: () {
+                            (rating != orginalRating)
+                                ? setState(() {
+                                    rating -= 1;
+                                  })
+                                : null;
+                            // add points to current player
+                          },
+                          style: ButtonStyle(
+                            backgroundColor:
+                                WidgetStateProperty.resolveWith<Color?>((
+                                  Set<WidgetState> states,
+                                ) {
+                                  if (rating == orginalRating) {
+                                    return Colors.grey;
+                                  }
+                                  return null; // Use the component's default.
+                                }),
+                          ),
+                          child: const Icon(Icons.remove),
+                        ),
+                      Text(
+                        (rating).toString(),
+                        style: const TextStyle(
+                          fontSize: 32,
+                          // color: Colors.white,
+                        ),
+                      ),
+                      if (canEdit)
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              rating += 1;
+                            });
+                            // add points to current player
+                          },
+                          child: const Icon(Icons.add),
+                        ),
+                    ],
+                  ),
+                ),
                 if (canEdit && rating != orginalRating)
-                  SizedBox(
-                    width: double.infinity,
+                  Positioned(
+                    bottom: 0,
                     child: FilledButton(
                       onPressed: (orginalRating != rating && !isSaving)
                           ? () async {
