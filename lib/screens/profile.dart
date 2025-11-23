@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:lanus_academy/main.dart';
 import 'package:lanus_academy/models/app_user.dart';
 import 'package:lanus_academy/provider/auth_provider.dart';
@@ -111,7 +112,7 @@ class _ProfileState extends ConsumerState<Profile> {
                     ),
                   ),
                   Positioned(
-                    top: 20,
+                    top: 30,
                     left: 80,
                     child: Text(
                       "67",
@@ -122,10 +123,10 @@ class _ProfileState extends ConsumerState<Profile> {
                     ),
                   ),
                   Positioned(
-                    top: 85,
-                    left: 85,
+                    top: 95,
+                    left: 95,
                     child: Text(
-                      "مهاجم",
+                      widget.user.position,
                       style: const TextStyle(
                         fontSize: 18,
                         // color: Colors.white,
@@ -135,10 +136,13 @@ class _ProfileState extends ConsumerState<Profile> {
                     ),
                   ),
                   Positioned(
-                    top: 140,
-                    left: 60,
+                    top: 150,
+                    left: 75,
                     child: Text(
-                      "آخر تاريخ دخول",
+                      DateFormat(
+                        'dd/MM/yy',
+                      ).format(widget.user.lastLogin.toDate()),
+
                       style: const TextStyle(
                         fontSize: 16,
                         // color: Colors.white,

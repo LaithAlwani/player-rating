@@ -7,10 +7,10 @@ class OnboardingPosition extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Map<String, String> positions = {
-      "Goalkeeper": "حارس مرمى",
-      "Defender": "مدافع",
-      "Midfielder": "لاعب وسط",
-      "Forward": "مهاجم",
+      "GK": "حارس مرمى",
+      "CB": "مدافع",
+      "MF": "لاعب وسط",
+      "FW": "مهاجم",
     };
     return Padding(
       padding: EdgeInsetsGeometry.all(24.0),
