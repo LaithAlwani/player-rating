@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lanus_academy/provider/auth_provider.dart';
 import 'package:lanus_academy/screens/onboadring/onboarding_screen.dart';
 import 'package:lanus_academy/services/auth_service.dart';
 
-class SignUpFrom extends StatefulWidget {
+class SignUpFrom extends ConsumerStatefulWidget {
   const SignUpFrom({super.key});
 
   @override
-  State<SignUpFrom> createState() => _SignUpFromState();
+  ConsumerState<SignUpFrom> createState() => _SignUpFromState();
 }
 
-class _SignUpFromState extends State<SignUpFrom> {
+class _SignUpFromState extends ConsumerState<SignUpFrom> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController _emailController = TextEditingController();
@@ -73,15 +75,11 @@ class _SignUpFromState extends State<SignUpFrom> {
                   final email = _emailController.text.trim();
                   final password = _passwordController.text.trim();
 
-                  final success = await AuthService.signUp(email, password);
-                  if (success) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const OnboardingScreen(),
-                      ),
-                    );
-                  } else {
+                  final success = await ref
+                      .read(authNotifierProvider.notifier)
+                      .signUp(email, password);
+                  if (!mounted) return;
+                  if (!success) {
                     setState(() {
                       _errorFeedback = "❌ فشل إنشاء الحساب";
                     });

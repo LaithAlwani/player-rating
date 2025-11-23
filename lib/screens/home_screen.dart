@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' hide Consumer;
 import 'package:lanus_academy/provider/auth_provider.dart';
 import 'package:lanus_academy/screens/profile.dart';
 import 'package:lanus_academy/services/auth_service.dart';
@@ -8,14 +9,14 @@ import 'package:lanus_academy/widgets/player_tile.dart';
 import 'package:lanus_academy/widgets/confirm_delete_dialog.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   late final HomeViewModel vm;
   final ScrollController _scrollController = ScrollController();
 
@@ -42,6 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authNotifierProvider);
+
     return ChangeNotifierProvider<HomeViewModel>.value(
       value: vm,
       child: Consumer<HomeViewModel>(
@@ -56,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
               actions: [
                 IconButton(
                   onPressed: () async {
-                    await AuthService.signOut();
+                    await ref.read(authNotifierProvider.notifier).signOut();
                   },
                   icon: const Icon(Icons.logout),
                 ),

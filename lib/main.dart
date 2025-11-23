@@ -1,4 +1,5 @@
 import 'package:arabic_font/arabic_font.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,6 +8,7 @@ import 'package:lanus_academy/firebase_options.dart';
 import 'package:lanus_academy/models/app_user.dart';
 import 'package:lanus_academy/provider/auth_provider.dart';
 import 'package:lanus_academy/screens/home_screen.dart';
+import 'package:lanus_academy/screens/onboadring/onboarding_screen.dart';
 import 'package:lanus_academy/screens/profile.dart';
 import 'package:lanus_academy/screens/wlecome/welcome.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -21,12 +23,13 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authNotifierProvider);
     return MaterialApp(
       title: 'Launs Academy',
       theme: ThemeData(
@@ -44,25 +47,37 @@ class MyApp extends StatelessWidget {
         // Add other supported locales here
       ],
       locale: const Locale('ar', ''), // Force Arabic locale
-      home: Consumer(
-        builder: (context, ref, child) {
-          final AsyncValue<AppUser?> user = ref.watch(authProvider);
-          return user.when(
-            data: (value) {
-              if (value == null) return const WelcomeScreen();
-              if (value.role != "admin") {
-                return Profile(user: value);
-              }
-              return HomeScreen();
-            },
-            error: (error, stack) =>
-                Center(child: Text("Error loading auth status: $error")),
-            loading: () => const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            ),
-          );
+      home: authState.when(
+        data: (user) {
+          final firebaseUser = FirebaseAuth.instance.currentUser;
+          if (firebaseUser == null) return WelcomeScreen();
+          if (user == null) return OnboardingScreen();
+          if (user.role != "admin") return Profile(user: user);
+          return HomeScreen();
         },
+        loading: () =>
+            Scaffold(body: const Center(child: CircularProgressIndicator())),
+        error: (err, _) => Scaffold(body: Center(child: Text('Error: $err'))),
       ),
+      // Consumer(
+      //   builder: (context, ref, child) {
+      //     final AsyncValue<AppUser?> user = ref.watch(authProvider);
+      //     return user.when(
+      //       data: (value) {
+      //         if (value == null) return const WelcomeScreen();
+      //         if (value.role != "admin") {
+      //           return Profile(user: value);
+      //         }
+      //         return HomeScreen();
+      //       },
+      //       error: (error, stack) =>
+      //           Center(child: Text("Error loading auth status: $error")),
+      //       loading: () => const Scaffold(
+      //         body: Center(child: CircularProgressIndicator()),
+      //       ),
+      //     );
+      //   },
+      // ),
     );
   }
 }

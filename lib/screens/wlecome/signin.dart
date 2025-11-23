@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lanus_academy/provider/auth_provider.dart';
 import 'package:lanus_academy/services/auth_service.dart';
 
-class SignInForm extends StatefulWidget {
+class SignInForm extends ConsumerStatefulWidget {
   const SignInForm({super.key});
 
   @override
-  State<SignInForm> createState() => _SignInFormState();
+  ConsumerState<SignInForm> createState() => _SignInFormState();
 }
 
-class _SignInFormState extends State<SignInForm> {
+class _SignInFormState extends ConsumerState<SignInForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController _emailController = TextEditingController();
@@ -72,8 +74,10 @@ class _SignInFormState extends State<SignInForm> {
                   final email = _emailController.text.trim();
                   final password = _passwordController.text.trim();
 
-                  final success = await AuthService.signIn(email, password);
-
+                  final success = await ref
+                      .read(authNotifierProvider.notifier)
+                      .signIn(email, password);
+                  if (!mounted) return;
                   if (success) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("✅ تم تسجيل الدخول بنجاح")),

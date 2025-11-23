@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lanus_academy/provider/auth_provider.dart';
 import 'package:lanus_academy/screens/wlecome/signin.dart';
 import 'package:lanus_academy/screens/wlecome/signup.dart';
 import 'package:lanus_academy/services/auth_service.dart';
 import 'package:lanus_academy/shared/social_logins.dart';
 
-class WelcomeScreen extends StatefulWidget {
+class WelcomeScreen extends ConsumerStatefulWidget {
   const WelcomeScreen({super.key});
 
   @override
-  State<WelcomeScreen> createState() => _WelcomeScreenState();
+  ConsumerState<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> {
+class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   bool isSignUpForm = false;
   bool isSocialLoginLoading = false;
 
@@ -20,9 +22,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       isSocialLoginLoading = true;
     });
     try {
-      final user = await AuthService.signInWithGoogle();
+      final success = await ref
+          .read(authNotifierProvider.notifier)
+          .signInWithGoogle();
       if (!mounted) return;
-      if (user) {
+      if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("✅ تم تسجيل الدخول بنجاح")),
         );

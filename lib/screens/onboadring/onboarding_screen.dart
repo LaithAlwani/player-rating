@@ -98,7 +98,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final AsyncValue<AppUser?> user = ref.watch(authProvider);
+    final AsyncValue<AppUser?> user = ref.watch(authNotifierProvider);
     final firebaseUser = FirebaseAuth.instance.currentUser;
     return user.when(
       data: (value) {

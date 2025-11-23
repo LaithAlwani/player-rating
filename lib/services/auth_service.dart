@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lanus_academy/firebase_options.dart';
+import 'package:lanus_academy/models/app_user.dart';
 
 class AuthService {
   static final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   // google login
-  static Future<bool> signInWithGoogle() async {
+  static Future<User?> signInWithGoogle() async {
     try {
       print(DefaultFirebaseOptions.serverClientId);
       await GoogleSignIn.instance.initialize(
@@ -24,46 +25,17 @@ class AuthService {
 
       if (credential.user != null) {
         print("✅ Google Sign-In successful: ${credential.user}");
-        return true;
+        return credential.user;
       }
-      return false;
+      return null;
     } catch (err) {
       print("❌ Google Sign-In error: $err");
-      return false;
+      return null;
     }
   }
 
   //signup with email and password
-  static Future<bool> signUp(String email, String password) async {
-    try {
-      final UserCredential credential = await _firebaseAuth
-          .createUserWithEmailAndPassword(email: email, password: password);
+  
 
-      if (credential.user != null) {
-        return true;
-      }
-      return false;
-    } catch (err) {
-      return false;
-    }
-  }
-
-  //login with email and password
-  static Future<bool> signIn(String email, String password) async {
-    try {
-      final UserCredential credential = await _firebaseAuth
-          .signInWithEmailAndPassword(email: email, password: password);
-
-      if (credential.user != null) {
-        return true;
-      }
-      return false;
-    } catch (err) {
-      return false;
-    }
-  }
-
-  static Future<void> signOut() async {
-    await _firebaseAuth.signOut();
-  }
+  
 }

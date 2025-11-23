@@ -29,7 +29,7 @@ class _ProfileState extends ConsumerState<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authProvider);
+    final authState = ref.watch(authNotifierProvider);
 
     return authState.when(
       data: (currentUser) {
@@ -47,7 +47,7 @@ class _ProfileState extends ConsumerState<Profile> {
             actions: [
               IconButton(
                 onPressed: () async {
-                  await AuthService.signOut();
+                  await ref.read(authNotifierProvider.notifier).signOut();
                   if (context.mounted) {
                     Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(builder: (_) => MyApp()),
