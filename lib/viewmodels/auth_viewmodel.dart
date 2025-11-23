@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lanus_academy/models/app_user.dart';
@@ -50,6 +51,14 @@ class AuthNotifier extends AsyncNotifier<AppUser?> {
     try {
       final UserCredential credential = await _firebaseAuth
           .signInWithEmailAndPassword(email: email, password: password);
+
+      final firebaseUser = credential.user;
+      if (firebaseUser == null) return false;
+      // 🔥 Update lastLogin timestamp in Firestore
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(firebaseUser.uid)
+          .update({'lastLogin': FieldValue.serverTimestamp()});
       final appUser = await FirestoreService.getUserById(credential.user!.uid);
       state = AsyncData(appUser);
       return true;
@@ -72,6 +81,7 @@ class AuthNotifier extends AsyncNotifier<AppUser?> {
         return false; // ❌ Fix: return false for failure
       }
 
+      
       // 2️⃣ Check AppUser in Firestore
       final appUser = await FirestoreService.getUserById(user.uid);
 
