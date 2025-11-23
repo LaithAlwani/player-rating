@@ -7,6 +7,7 @@ import 'package:lanus_academy/provider/auth_provider.dart';
 import 'package:lanus_academy/screens/onboadring/onboadring_name.dart';
 import 'package:lanus_academy/screens/onboadring/onboarding_bottom_navbar.dart';
 import 'package:lanus_academy/screens/onboadring/onboarding_image.dart';
+import 'package:lanus_academy/screens/onboadring/onboarding_position.dart';
 import 'package:lanus_academy/screens/profile.dart';
 import 'package:lanus_academy/services/firestore_services.dart';
 import 'package:lanus_academy/services/storage_service.dart';
@@ -20,10 +21,11 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   User? _currentUser;
-  final int _totalPages = 2;
+  final int _totalPages = 3;
   final PageController _controller = PageController();
   int _currentPage = 0;
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _positionController = TextEditingController();
   File? _selectedImageFile;
   bool isLoading = false;
 
@@ -54,6 +56,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     String? imageUrl;
     // Save user data (to Firestore, local storage, etc.)
     debugPrint("Name: ${_nameController.text}");
+    debugPrint("Position: ${_positionController.text}");
     debugPrint("Image: $_selectedImageFile");
     if (_selectedImageFile != null) {
       imageUrl = await StorageService.uploadImageAndGetUrl(
@@ -66,6 +69,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       email: _currentUser!.email!,
       displayName: _nameController.text,
       displayNameLower: _nameController.text.toLowerCase(),
+      position: _positionController.text,
       photoUrl: imageUrl,
     );
 
@@ -116,6 +120,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         setState(() => _currentPage = index),
                     children: [
                       OnboadringName(nameController: _nameController),
+                      OnboardingPosition(
+                        positionController: _positionController,
+                      ),
                       OnboardingImage(
                         selectedImage: (file) {
                           _selectedImageFile = file;
