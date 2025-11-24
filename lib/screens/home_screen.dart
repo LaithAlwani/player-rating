@@ -55,6 +55,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: Image.asset('assets/logo.png'),
               ),
+              centerTitle: true,
               title: const Text("قائمة اللاعبين"),
               actions: [
                 IconButton(

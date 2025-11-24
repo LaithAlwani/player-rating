@@ -33,6 +33,13 @@ class AppUser {
   final Timestamp updatedAt;
   final Timestamp lastLogin;
 
+  bool get isGoalkeeper => position == "GK";
+
+  int get overallRating {
+    if (stats == null) return 0;
+    return stats!.overall; // already int
+  }
+
   // ---------- Serialization ----------
 
   factory AppUser.fromFirestore(

@@ -3,11 +3,19 @@ import 'package:lanus_academy/models/goal_keeper_stats.dart';
 
 class PlayerStats {
   final FieldPlayerStats? fieldPlayer;
-  final GoalKeeperStats? goalkeeper;
+  final GoalkeeperStats? goalkeeper;
 
   PlayerStats({this.fieldPlayer, this.goalkeeper});
 
-  bool get isGoalKeeper => goalkeeper != null;
+  int get overall {
+    if (fieldPlayer != null) {
+      return fieldPlayer!.overall;
+    } else if (goalkeeper != null) {
+      return goalkeeper!.overall;
+    } else {
+      return 0;
+    }
+  }
 
   factory PlayerStats.fromFirestore(Map<String, dynamic>? data) {
     if (data == null) return PlayerStats();
@@ -17,7 +25,7 @@ class PlayerStats {
           ? FieldPlayerStats.fromFirestore(data['fieldPlayer'])
           : null,
       goalkeeper: data['goalkeeper'] != null
-          ? GoalKeeperStats.fromFirestore(data['goalkeeper'])
+          ? GoalkeeperStats.fromFirestore(data['goalkeeper'])
           : null,
     );
   }
@@ -31,7 +39,7 @@ class PlayerStats {
 
   PlayerStats copywith({
     FieldPlayerStats? fieldPlayer,
-    GoalKeeperStats? goalkeeper,
+    GoalkeeperStats? goalkeeper,
   }) {
     return PlayerStats(
       fieldPlayer: fieldPlayer ?? this.fieldPlayer,

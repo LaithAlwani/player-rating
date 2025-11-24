@@ -15,6 +15,11 @@ class FieldPlayerStats {
     required this.pace,
   });
 
+  int get overall {
+    final total = shooting + passing + pace + dribbling + defending + physical;
+    return (total / 6).round();
+  }
+
   factory FieldPlayerStats.fromFirestore(Map<String, dynamic> data) {
     return FieldPlayerStats(
       passing: data['passing'],

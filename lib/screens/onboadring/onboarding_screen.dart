@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lanus_academy/models/app_user.dart';
+import 'package:lanus_academy/models/field_player_stats.dart';
+import 'package:lanus_academy/models/goal_keeper_stats.dart';
+import 'package:lanus_academy/models/player_stats.dart';
 import 'package:lanus_academy/provider/auth_provider.dart';
 import 'package:lanus_academy/screens/onboadring/onboadring_name.dart';
 import 'package:lanus_academy/screens/onboadring/onboarding_bottom_navbar.dart';
@@ -64,6 +67,31 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         _currentUser!.uid,
       );
     }
+    PlayerStats updatedStats;
+
+    if (_positionController.text != "GK") {
+      updatedStats = PlayerStats(
+        fieldPlayer: FieldPlayerStats(
+          passing: 50,
+          shooting: 50,
+          dribbling: 50,
+          physical: 50,
+          defending: 50,
+          pace: 50,
+        ),
+      );
+    } else {
+      updatedStats = PlayerStats(
+        goalkeeper: GoalkeeperStats(
+          diving: 60,
+          handling: 60,
+          kicking: 60,
+          reflexes: 60,
+          positioning: 60,
+          speed: 60,
+        ),
+      );
+    }
     AppUser user = AppUser(
       uid: _currentUser!.uid,
       email: _currentUser!.email!,
@@ -71,6 +99,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       displayNameLower: _nameController.text.toLowerCase(),
       position: _positionController.text,
       photoUrl: imageUrl,
+      stats: updatedStats,
     );
 
     try {

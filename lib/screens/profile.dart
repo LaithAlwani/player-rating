@@ -1,3 +1,4 @@
+import 'package:arabic_font/arabic_font.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +7,7 @@ import 'package:lanus_academy/models/app_user.dart';
 import 'package:lanus_academy/provider/auth_provider.dart';
 import 'package:lanus_academy/services/auth_service.dart';
 import 'package:lanus_academy/services/firestore_services.dart';
+import 'package:lanus_academy/widgets/player_stats_grid.dart';
 
 class Profile extends ConsumerStatefulWidget {
   const Profile({super.key, required this.user});
@@ -44,7 +46,8 @@ class _ProfileState extends ConsumerState<Profile> {
                     padding: const EdgeInsets.all(8.0),
                     child: Image.asset('assets/logo.png'),
                   ),
-            title: Text("ملف الشخصي"),
+            title: Text("الملف الشخصي"),
+            centerTitle: true,
             actions: [
               IconButton(
                 onPressed: () async {
@@ -73,8 +76,8 @@ class _ProfileState extends ConsumerState<Profile> {
                   ),
                   SizedBox(height: 32),
                   Positioned(
-                    top: 30,
-                    right: 60,
+                    top: 50,
+                    right: 80,
                     child: Hero(
                       tag: widget.user.uid,
                       child: ClipOval(
@@ -101,11 +104,11 @@ class _ProfileState extends ConsumerState<Profile> {
                     ),
                   ),
                   Positioned(
-                    top: 280,
+                    top: 285,
                     child: Text(
                       widget.user.email,
                       style: const TextStyle(
-                        fontSize: 18,
+                        fontSize: 14,
                         // color: Colors.white,
                       ),
                       textAlign: TextAlign.center,
@@ -115,7 +118,7 @@ class _ProfileState extends ConsumerState<Profile> {
                     top: 30,
                     left: 80,
                     child: Text(
-                      "67",
+                      widget.user.overallRating.toString(),
                       style: TextStyle(
                         fontSize: 48,
                         fontWeight: FontWeight.bold,
@@ -151,55 +154,9 @@ class _ProfileState extends ConsumerState<Profile> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-
                   Positioned(
-                    bottom: 150,
-                    width: 300,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        if (canEdit)
-                          ElevatedButton(
-                            onPressed: () {
-                              (rating != orginalRating)
-                                  ? setState(() {
-                                      rating -= 1;
-                                    })
-                                  : null;
-                              // add points to current player
-                            },
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  WidgetStateProperty.resolveWith<Color?>((
-                                    Set<WidgetState> states,
-                                  ) {
-                                    if (rating == orginalRating) {
-                                      return Colors.grey;
-                                    }
-                                    return null; // Use the component's default.
-                                  }),
-                            ),
-                            child: const Icon(Icons.remove),
-                          ),
-                        Text(
-                          (rating).toString(),
-                          style: const TextStyle(
-                            fontSize: 32,
-                            // color: Colors.white,
-                          ),
-                        ),
-                        if (canEdit)
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                rating += 1;
-                              });
-                              // add points to current player
-                            },
-                            child: const Icon(Icons.add),
-                          ),
-                      ],
-                    ),
+                    bottom: 138,
+                    child: PlayerStatsGrid(user: widget.user),
                   ),
                   if (canEdit && rating != orginalRating)
                     Positioned(

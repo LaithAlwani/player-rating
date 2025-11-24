@@ -1,5 +1,4 @@
-
-class GoalKeeperStats {
+class GoalkeeperStats {
   final int diving;
   final int handling;
   final int kicking;
@@ -7,7 +6,7 @@ class GoalKeeperStats {
   final int positioning;
   final int speed;
 
-  GoalKeeperStats({
+  GoalkeeperStats({
     required this.diving,
     required this.handling,
     required this.kicking,
@@ -16,8 +15,13 @@ class GoalKeeperStats {
     required this.speed,
   });
 
-  factory GoalKeeperStats.fromFirestore(Map<String, dynamic> data) {
-    return GoalKeeperStats(
+  int get overall {
+    final total = diving + handling + kicking + reflexes + speed + positioning;
+    return (total / 6).round();
+  }
+
+  factory GoalkeeperStats.fromFirestore(Map<String, dynamic> data) {
+    return GoalkeeperStats(
       diving: data['diving'],
       handling: data['handling'],
       kicking: data['kicking'],
@@ -38,7 +42,7 @@ class GoalKeeperStats {
     };
   }
 
-  GoalKeeperStats copyWith({
+  GoalkeeperStats copyWith({
     int? diving,
     int? handling,
     int? kicking,
@@ -46,7 +50,7 @@ class GoalKeeperStats {
     int? positioning,
     int? speed,
   }) {
-    return GoalKeeperStats(
+    return GoalkeeperStats(
       diving: diving ?? this.diving,
       handling: handling ?? this.handling,
       kicking: kicking ?? this.kicking,
