@@ -9,7 +9,7 @@ class OnboardingPosition extends StatelessWidget {
     final Map<String, String> positions = {
       "GK": "حارس مرمى",
       "CB": "مدافع",
-      "MF": "لاعب وسط",
+      "MF": "وسط",
       "FW": "مهاجم",
     };
     return Padding(
