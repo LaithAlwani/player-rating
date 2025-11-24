@@ -59,25 +59,6 @@ class MyApp extends ConsumerWidget {
             Scaffold(body: const Center(child: CircularProgressIndicator())),
         error: (err, _) => Scaffold(body: Center(child: Text('Error: $err'))),
       ),
-      // Consumer(
-      //   builder: (context, ref, child) {
-      //     final AsyncValue<AppUser?> user = ref.watch(authProvider);
-      //     return user.when(
-      //       data: (value) {
-      //         if (value == null) return const WelcomeScreen();
-      //         if (value.role != "admin") {
-      //           return Profile(user: value);
-      //         }
-      //         return HomeScreen();
-      //       },
-      //       error: (error, stack) =>
-      //           Center(child: Text("Error loading auth status: $error")),
-      //       loading: () => const Scaffold(
-      //         body: Center(child: CircularProgressIndicator()),
-      //       ),
-      //     );
-      //   },
-      // ),
     );
   }
 }
