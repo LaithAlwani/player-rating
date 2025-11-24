@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lanus_academy/models/player_stats.dart';
 
 class AppUser {
   AppUser({
@@ -11,6 +12,7 @@ class AppUser {
     this.photoUrl,
     this.isVerified = false,
     this.role = "user",
+    this.stats,
     Timestamp? createdAt,
     Timestamp? updatedAt,
     Timestamp? lastLogin,
@@ -26,6 +28,7 @@ class AppUser {
   final int? rating;
   final bool isVerified;
   final String role;
+  final PlayerStats? stats;
   final Timestamp createdAt;
   final Timestamp updatedAt;
   final Timestamp lastLogin;
@@ -48,6 +51,7 @@ class AppUser {
       rating: data['rating'],
       isVerified: data['isVerified'] ?? false,
       role: data['role'] ?? 'user',
+      stats: PlayerStats.fromFirestore(data['stats']),
       createdAt: data['createdAt'] ?? Timestamp.now(),
       updatedAt: data['updatedAt'] ?? Timestamp.now(),
       lastLogin: data['lastLogin'] ?? Timestamp.now(),
@@ -68,6 +72,7 @@ class AppUser {
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'lastLogin': lastLogin,
+      if (stats != null) 'stats': stats!.toFirestore(),
     };
   }
 
@@ -81,6 +86,7 @@ class AppUser {
     int? rating,
     bool? isVerified,
     String? role,
+    PlayerStats? stats,
     Timestamp? updatedAt,
     Timestamp? lastLogin,
   }) {
@@ -95,6 +101,7 @@ class AppUser {
       isVerified: isVerified ?? this.isVerified,
       role: role ?? this.role,
       createdAt: createdAt,
+      stats: stats ?? this.stats,
       updatedAt: updatedAt ?? Timestamp.now(),
       lastLogin: lastLogin ?? Timestamp.now(),
     );
