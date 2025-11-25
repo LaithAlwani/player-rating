@@ -113,4 +113,21 @@ class AppUser {
       lastLogin: lastLogin ?? Timestamp.now(),
     );
   }
+
+  AppUser merge(Map<String, dynamic> data) {
+    return copyWith(
+      uid: data["uid"],
+      displayName: data['displayName'],
+      displayNameLower: data['displayNameLower'],
+      position: data['position'],
+      email: data['email'],
+      photoUrl: data['photoUrl'],
+      rating: data['rating'],
+      isVerified: data['isVerified'] ?? false,
+      role: data['role'] ?? 'user',
+      updatedAt: data['updatedAt'] ?? Timestamp.now(),
+      lastLogin: data['lastLogin'] ?? Timestamp.now(),
+      stats: data['stats'] != null ? stats!.merge(data['stats']) : stats,
+    );
+  }
 }

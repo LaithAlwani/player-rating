@@ -1,215 +1,295 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lanus_academy/models/app_user.dart';
+import 'package:lanus_academy/models/field_player_stats.dart';
+import 'package:lanus_academy/models/goal_keeper_stats.dart';
+import 'package:lanus_academy/provider/home_view_model_provider.dart';
+import 'package:lanus_academy/viewmodels/home_viewmodel.dart';
+// import 'package:provider/provider.dart';
 
-class PlayerStatsGrid extends StatelessWidget {
+class PlayerStatsGrid extends ConsumerWidget {
   const PlayerStatsGrid({super.key, required this.user});
 
   final AppUser user;
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final stats = user.stats;
-    if (stats == null) {
-      return const Text("No stats available");
-    }
+    if (stats == null) return const Text("No stats available");
+
     final isGK = user.isGoalkeeper;
-    final Map<String, int> items;
-
-    if (isGK) {
-      final gk = stats.goalkeeper!;
-      items = {
-        "DIV": gk.diving,
-        "HAD": gk.handling,
-        "KIC": gk.kicking,
-        "REF": gk.reflexes,
-        "SPE": gk.speed,
-        "POS": gk.positioning,
-      };
-    } else {
-      final fp = stats.fieldPlayer!;
-      items = {
-        "DRI": fp.dribbling,
-        "PAC": fp.pace,
-        "DEF": fp.defending,
-        "SHO": fp.shooting,
-        "PHY": fp.physical,
-        "PAS": fp.passing,
-      };
-    }
-
-    final entries = items.entries.toList();
-    print(entries[0].key);
+    final items = isGK
+        ? [
+            {"abbr": "DIV", "key": "diving", "value": stats.goalkeeper!.diving},
+            {
+              "abbr": "HAD",
+              "key": "handling",
+              "value": stats.goalkeeper!.handling,
+            },
+            {
+              "abbr": "KIC",
+              "key": "kicking",
+              "value": stats.goalkeeper!.kicking,
+            },
+            {
+              "abbr": "REF",
+              "key": "reflexes",
+              "value": stats.goalkeeper!.reflexes,
+            },
+            {"abbr": "SPE", "key": "speed", "value": stats.goalkeeper!.speed},
+            {
+              "abbr": "POS",
+              "key": "positioning",
+              "value": stats.goalkeeper!.positioning,
+            },
+          ]
+        : [
+            {
+              "abbr": "DRI",
+              "key": "dribbling",
+              "value": stats.fieldPlayer!.dribbling,
+            },
+            {"abbr": "PAC", "key": "pace", "value": stats.fieldPlayer!.pace},
+            {
+              "abbr": "DEF",
+              "key": "defending",
+              "value": stats.fieldPlayer!.defending,
+            },
+            {
+              "abbr": "SHO",
+              "key": "shooting",
+              "value": stats.fieldPlayer!.shooting,
+            },
+            {
+              "abbr": "PHY",
+              "key": "physical",
+              "value": stats.fieldPlayer!.physical,
+            },
+            {
+              "abbr": "PAS",
+              "key": "passing",
+              "value": stats.fieldPlayer!.passing,
+            },
+          ];
 
     return SizedBox(
       width: 250,
       child: Column(
         spacing: 12,
-        children: [
-          Row(
-            spacing: 48,
+        children: List.generate((items.length / 2).ceil(), (rowIndex) {
+          final start = rowIndex * 2;
+          final end = (start + 2).clamp(0, items.length);
+          final rowItems = items.sublist(start, end);
+
+          return Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              SizedBox(
-                width: 100,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      "${entries[0].key} ",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      entries[0].value.toString(),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+            children: rowItems.map((item) {
+              return StatTile(
+                label: item["abbr"].toString(),
+                value: item["value"] as int,
+                onTap: () => _onStatTap(
+                  context,
+                  ref,
+                  user,
+                  item["key"].toString(),
+                  item["abbr"].toString(),
+                  item["value"] as int,
                 ),
-              ),
-              SizedBox(
-                width: 100,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      "${entries[1].key} ",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      entries[1].value.toString(),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          Row(
-            spacing: 48,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              SizedBox(
-                width: 100,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      "${entries[2].key} ",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      entries[2].value.toString(),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                width: 100,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      "${entries[3].key} ",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      entries[3].value.toString(),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          Row(
-            spacing: 48,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              SizedBox(
-                width: 100,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text(
-                      "${entries[4].key} ",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      entries[4].value.toString(),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                width: 100,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text(
-                      "${entries[5].key} ",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      entries[5].value.toString(),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
+              );
+            }).toList(),
+          );
+        }),
       ),
     );
+  }
+}
+
+void _onStatTap(
+  BuildContext context,
+  WidgetRef ref,
+  AppUser user,
+  String statKey,
+  String label,
+  int currentValue,
+) async {
+  final homeVM = ref.read(homeViewModelProvider);
+
+  await showStatEditor(context, label, currentValue, (newValue) async {
+    final updatedStats = user.stats!.copywith(
+      fieldPlayer: user.isGoalkeeper
+          ? null
+          : updatedFP(user.stats!.fieldPlayer!, statKey, newValue),
+      goalkeeper: user.isGoalkeeper
+          ? updatedGK(user.stats!.goalkeeper!, statKey, newValue)
+          : null,
+    );
+
+    await homeVM.updateUser(user.uid, {"stats": updatedStats});
+
+    // Update local copy for UI rebuild
+    final updatedUser = user.copyWith(stats: updatedStats);
+    homeVM.updateLocalPlayer(updatedUser);
+  });
+}
+
+class StatTile extends StatelessWidget {
+  final String label;
+  final int value;
+  final void Function() onTap;
+
+  const StatTile({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: SizedBox(
+        width: 100,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(
+              "$label ",
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              value.toString(),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Future<void> showStatEditor(
+  BuildContext context,
+  String label,
+  int currentValue,
+  void Function(int) onSave,
+) async {
+  int tempValue = currentValue;
+
+  await showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.white,
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return SizedBox(
+            height: 350,
+            child: Column(
+              children: [
+                const SizedBox(height: 16),
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                Expanded(
+                  child: ListWheelScrollView.useDelegate(
+                    itemExtent: 50,
+                    perspective: 0.003,
+                    controller: FixedExtentScrollController(
+                      initialItem: currentValue - 1,
+                    ),
+                    onSelectedItemChanged: (index) {
+                      setState(() {
+                        tempValue = index + 1;
+                      });
+                    },
+                    childDelegate: ListWheelChildBuilderDelegate(
+                      builder: (context, index) {
+                        if (index >= 99) return null;
+                        return Center(
+                          child: Text(
+                            (index + 1).toString(),
+                            style: TextStyle(
+                              fontSize: (index + 1) == tempValue ? 28 : 22,
+                              fontWeight: (index + 1) == tempValue
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                              color: (index + 1) == tempValue
+                                  ? Colors.blue
+                                  : Colors.black,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    onSave(tempValue);
+                  },
+                  child: const Text("حفظ"),
+                ),
+
+                const SizedBox(height: 16),
+              ],
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
+GoalkeeperStats updatedGK(GoalkeeperStats old, String key, int value) {
+  switch (key) {
+    case "diving":
+      return old.copyWith(diving: value);
+    case "handling":
+      return old.copyWith(handling: value);
+    case "kicking":
+      return old.copyWith(kicking: value);
+    case "reflexes":
+      return old.copyWith(reflexes: value);
+    case "speed":
+      return old.copyWith(speed: value);
+    case "positioning":
+      return old.copyWith(positioning: value);
+    default:
+      return old;
+  }
+}
+
+FieldPlayerStats updatedFP(FieldPlayerStats old, String key, int value) {
+  switch (key) {
+    case "dribbling":
+      return old.copyWith(dribbling: value);
+    case "pace":
+      return old.copyWith(pace: value);
+    case "defending":
+      return old.copyWith(defending: value);
+    case "shooting":
+      return old.copyWith(shooting: value);
+    case "physical":
+      return old.copyWith(physical: value);
+    case "passing":
+      return old.copyWith(passing: value);
+    default:
+      return old;
   }
 }

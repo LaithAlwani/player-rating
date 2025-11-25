@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:lanus_academy/main.dart';
 import 'package:lanus_academy/models/app_user.dart';
 import 'package:lanus_academy/provider/auth_provider.dart';
+import 'package:lanus_academy/provider/home_view_model_provider.dart';
 import 'package:lanus_academy/services/auth_service.dart';
 import 'package:lanus_academy/services/firestore_services.dart';
 import 'package:lanus_academy/widgets/player_stats_grid.dart';
@@ -33,6 +34,15 @@ class _ProfileState extends ConsumerState<Profile> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authNotifierProvider);
+    final homeVM = ref.watch(homeViewModelProvider);
+    if (homeVM.players.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    final user = homeVM.players.firstWhere(
+      (p) => p.uid == widget.user.uid,
+      // orElse: () => null,
+    );
 
     return authState.when(
       data: (currentUser) {
@@ -118,7 +128,7 @@ class _ProfileState extends ConsumerState<Profile> {
                     top: 30,
                     left: 80,
                     child: Text(
-                      widget.user.overallRating.toString(),
+                      user.overallRating.toString(),
                       style: TextStyle(
                         fontSize: 48,
                         fontWeight: FontWeight.bold,
@@ -154,10 +164,8 @@ class _ProfileState extends ConsumerState<Profile> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  Positioned(
-                    bottom: 138,
-                    child: PlayerStatsGrid(user: widget.user),
-                  ),
+                  Positioned(bottom: 138, child: PlayerStatsGrid(user: user)),
+
                   if (canEdit && rating != orginalRating)
                     Positioned(
                       bottom: 0,

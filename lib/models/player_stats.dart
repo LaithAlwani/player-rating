@@ -46,4 +46,15 @@ class PlayerStats {
       goalkeeper: goalkeeper ?? this.goalkeeper,
     );
   }
+
+  PlayerStats merge(Map<String, dynamic> data) {
+    return copywith(
+      fieldPlayer: data['fieldPlayer'] != null
+          ? fieldPlayer!.merge(data['fieldPlayer'])
+          : fieldPlayer,
+      goalkeeper: data['goalkeeper'] != null
+          ? goalkeeper!.merge(data['goalkeeper'])
+          : goalkeeper,
+    );
+  }
 }

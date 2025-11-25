@@ -59,4 +59,15 @@ class GoalkeeperStats {
       speed: speed ?? this.speed,
     );
   }
+
+  GoalkeeperStats merge(Map<String, dynamic> data) {
+    return copyWith(
+      diving: data['diving'] ?? diving,
+      handling: data['handling'] ?? handling,
+      kicking: data['kicking'] ?? kicking,
+      reflexes: data['reflexes'] ?? reflexes,
+      speed: data['speed'] ?? speed,
+      positioning: data['positioning'] ?? positioning,
+    );
+  }
 }

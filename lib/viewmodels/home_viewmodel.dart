@@ -3,9 +3,13 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lanus_academy/models/app_user.dart';
+import 'package:lanus_academy/models/field_player_stats.dart';
+import 'package:lanus_academy/models/goal_keeper_stats.dart';
+import 'package:lanus_academy/models/player_stats.dart';
 import 'package:lanus_academy/services/firestore_services.dart';
 
 class HomeViewModel extends ChangeNotifier {
+  HomeViewModel();
   List<AppUser> players = [];
   DocumentSnapshot<AppUser>? lastDoc;
   bool isLoading = false;
@@ -77,19 +81,50 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateLocalPlayer(AppUser updatedUser) {
+    final index = players.indexWhere((p) => p.uid == updatedUser.uid);
+    if (index != -1) {
+      players[index] = updatedUser;
+      notifyListeners(); // <-- inside the ChangeNotifier
+    }
+  }
+
   Future<void> updateUser(String uid, Map<String, dynamic> data) async {
     try {
-      await FirestoreService.updateUser(uid, data);
+      // Convert nested objects to Map for Firestore
+      final firestoreData = <String, dynamic>{};
+      data.forEach((key, value) {
+        if (value is PlayerStats ||
+            value is FieldPlayerStats ||
+            value is GoalkeeperStats) {
+          firestoreData[key] = (value as dynamic).toFirestore();
+        } else {
+          firestoreData[key] = value;
+        }
+      });
 
-      final index = players.indexWhere((player) => player.uid == uid);
-      if (index != -1) {
-        final oldUser = players[index];
-        final updatedUser = oldUser.copyWith(
-          rating: data['rating'] ?? oldUser.rating,
-        );
-        players[index] = updatedUser;
-        notifyListeners();
-      }
+      await FirestoreService.updateUser(uid, firestoreData);
+
+      // Update local list
+      final index = players.indexWhere((p) => p.uid == uid);
+      if (index == -1) return;
+
+      final oldUser = players[index];
+
+      // Reconstruct PlayerStats from Map before merging
+      final newStats = data['stats'] is PlayerStats
+          ? data['stats']
+          : PlayerStats.fromFirestore(data['stats']);
+
+      final updatedUser = oldUser.copyWith(
+        stats: newStats,
+        displayName: data['displayName'] ?? oldUser.displayName,
+        photoUrl: data['photoUrl'] ?? oldUser.photoUrl,
+        // add other fields as needed
+      );
+
+      players[index] = updatedUser;
+      notifyListeners();
     } catch (e) {
       print("❌ Error updating user: $e");
       rethrow;

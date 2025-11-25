@@ -59,4 +59,15 @@ class FieldPlayerStats {
       pace: pace ?? this.pace,
     );
   }
+
+  FieldPlayerStats merge(Map<String, dynamic> data) {
+    return copyWith(
+      dribbling: data['dribbling'] ?? dribbling,
+      pace: data['pace'] ?? pace,
+      defending: data['defending'] ?? defending,
+      shooting: data['shooting'] ?? shooting,
+      physical: data['physical'] ?? physical,
+      passing: data['passing'] ?? passing,
+    );
+  }
 }
