@@ -218,6 +218,7 @@ Future<void> showStatEditor(
                     },
                     childDelegate: ListWheelChildBuilderDelegate(
                       builder: (context, index) {
+                        if (index < 0) return null;
                         if (index >= 99) return null;
                         return Center(
                           child: Text(
