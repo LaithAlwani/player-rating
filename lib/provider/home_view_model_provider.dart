@@ -5,10 +5,9 @@ import 'package:lanus_academy/models/field_player_stats.dart';
 import 'package:lanus_academy/models/goal_keeper_stats.dart';
 import 'package:lanus_academy/models/player_stats.dart';
 import 'package:lanus_academy/services/firestore_services.dart';
-import 'package:lanus_academy/viewmodels/home_viewmodel.dart';
 
 final homeViewModelProvider =
-    StateNotifierProvider.autoDispose<HomeViewModelNotifier, HomeState>((ref) {
+    StateNotifierProvider<HomeViewModelNotifier, HomeState>((ref) {
       return HomeViewModelNotifier();
     });
 
@@ -57,10 +56,10 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
       lastDoc: null,
       hasMore: true,
     );
-
     final snapshot = await FirestoreService.fetchUsersPage(limit: 20);
-
     final playersList = snapshot.docs.map((d) => d.data()).toList();
+    playersList.sort((a, b) => b.overallRating.compareTo(a.overallRating));
+
     final lastDoc = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
     final hasMore = snapshot.docs.length >= 20;
 
@@ -142,6 +141,8 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
     if (index != -1) {
       final updatedPlayers = [...state.players];
       updatedPlayers[index] = updatedUser;
+      updatedPlayers.sort((a, b) => b.overallRating.compareTo(a.overallRating));
+
       state = state.copyWith(players: updatedPlayers);
     }
   }
