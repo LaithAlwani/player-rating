@@ -53,7 +53,11 @@ class OnboardingBottomNavbar extends StatelessWidget {
                 ),
               ),
               child: isLoading
-                  ? CircularProgressIndicator()
+                  ? SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(),
+                    )
                   : Text(
                       currentPage == totalPages - 1 ? "تسجيل" : "التالي",
                       style: TextStyle(fontWeight: FontWeight.bold),
