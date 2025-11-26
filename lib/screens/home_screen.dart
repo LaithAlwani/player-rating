@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' hide Consumer;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lanus_academy/provider/auth_provider.dart';
 import 'package:lanus_academy/provider/home_view_model_provider.dart';
 import 'package:lanus_academy/screens/profile.dart';
-import 'package:lanus_academy/services/auth_service.dart';
-import 'package:lanus_academy/viewmodels/home_viewmodel.dart';
-import 'package:lanus_academy/models/app_user.dart';
+
 import 'package:lanus_academy/widgets/player_tile.dart';
 import 'package:lanus_academy/widgets/confirm_delete_dialog.dart';
-import 'package:provider/provider.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -25,7 +22,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
 
     _scrollController.addListener(() {
-      final vm = ref.watch(homeViewModelProvider.notifier);
+      final vm = ref.read(homeViewModelProvider.notifier);
       final state = ref.read(homeViewModelProvider);
       if (!state.isLoading &&
           state.hasMore &&
@@ -64,74 +61,94 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // Search bar
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            child: Container(
-              decoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Colors.grey, width: 1),
+      body: Builder(
+        builder: (_) {
+          if (state.isLoading && state.players.isEmpty) {
+            // First load
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (!state.isLoading && state.players.isEmpty) {
+            // Finished loading but still empty
+            return const Center(child: Text("لا يوجد لاعبين"));
+          }
+
+          // Loaded & has players
+          return Column(
+            children: [
+              // Search bar
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16,
+                  horizontal: 24,
+                ),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: Colors.grey, width: 1),
+                    ),
+                  ),
+                  child: SearchBar(
+                    leading: const Icon(Icons.search),
+                    hintText: "ابحث عن اسم لاعب...",
+                    backgroundColor: const WidgetStatePropertyAll(
+                      Colors.transparent,
+                    ),
+                    shadowColor: const WidgetStatePropertyAll(
+                      Colors.transparent,
+                    ),
+                    overlayColor: const WidgetStatePropertyAll(
+                      Colors.transparent,
+                    ),
+                    onSubmitted: (query) => homeVM.searchPlayers(query),
+                  ),
                 ),
               ),
-              child: SearchBar(
-                leading: const Icon(Icons.search),
-                hintText: "ابحث عن اسم لاعب...",
-                backgroundColor: const WidgetStatePropertyAll(
-                  Colors.transparent,
-                ),
-                shadowColor: const WidgetStatePropertyAll(Colors.transparent),
-                overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-                onSubmitted: (query) => homeVM.searchPlayers(query),
-              ),
-            ),
-          ),
 
-          // Player list
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: () async => homeVM.refreshPlayers(),
-              child: ListView.builder(
-                controller: _scrollController,
-                itemCount: state.players.length + (state.hasMore ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index == state.players.length) {
-                    // Bottom loader
-                    return const Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  }
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () async => homeVM.refreshPlayers(),
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    itemCount: state.players.length + (state.hasMore ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index == state.players.length) {
+                        return const Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      }
 
-                  final player = state.players[index];
+                      final player = state.players[index];
 
-                  return Dismissible(
-                    key: Key(player.uid),
-                    direction: DismissDirection.endToStart,
-                    confirmDismiss: (dir) async {
-                      return await showConfirmDeleteDialog(
-                        context,
-                        player.displayName,
+                      return Dismissible(
+                        key: Key(player.uid),
+                        direction: DismissDirection.endToStart,
+                        confirmDismiss: (dir) async {
+                          return await showConfirmDeleteDialog(
+                            context,
+                            player.displayName,
+                          );
+                        },
+                        child: PlayerTile(
+                          player: player,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Profile(user: player),
+                              ),
+                            );
+                          },
+                        ),
                       );
                     },
-                    child: PlayerTile(
-                      player: player,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Profile(user: player),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                },
+                  ),
+                ),
               ),
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }
