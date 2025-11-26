@@ -80,7 +80,8 @@ class PlayerStatsGrid extends ConsumerWidget {
           final rowItems = items.sublist(start, end);
 
           return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: rowItems.map((item) {
               return StatTile(
                 label: item["abbr"].toString(),
@@ -124,28 +125,36 @@ class StatTile extends ConsumerWidget {
 
         return GestureDetector(
           onTap: canEdit ? () => onTap(context, ref) : null,
-          child: SizedBox(
-            width: 100,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text(
-                  "$label ",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+          child: Container(
+            width: 120,
+            // color: Colors.green,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12.0,
+                vertical: 4,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                spacing: 10,
+                children: [
+                  Text(
+                    "$label ",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Text(
-                  value.toString(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                  Text(
+                    value.toString(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
@@ -184,7 +193,7 @@ Future<void> _onStatTap(
                 children: [
                   const SizedBox(height: 16),
                   Text(
-                    label,
+                    statKey.toUpperCase(),
                     style: const TextStyle(
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
