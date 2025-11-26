@@ -129,10 +129,7 @@ class StatTile extends ConsumerWidget {
             width: 120,
             // color: Colors.green,
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12.0,
-                vertical: 4,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 spacing: 10,
