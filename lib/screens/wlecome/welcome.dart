@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lanus_academy/provider/auth_provider.dart';
 import 'package:lanus_academy/screens/wlecome/signin.dart';
 import 'package:lanus_academy/screens/wlecome/signup.dart';
-import 'package:lanus_academy/services/auth_service.dart';
 import 'package:lanus_academy/shared/social_logins.dart';
 
 class WelcomeScreen extends ConsumerStatefulWidget {

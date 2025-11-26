@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lanus_academy/provider/auth_provider.dart';
-import 'package:lanus_academy/services/auth_service.dart';
 
 class SignInForm extends ConsumerStatefulWidget {
   const SignInForm({super.key});

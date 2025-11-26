@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lanus_academy/firebase_options.dart';
-import 'package:lanus_academy/models/app_user.dart';
 import 'package:lanus_academy/provider/auth_provider.dart';
 import 'package:lanus_academy/screens/home_screen.dart';
 import 'package:lanus_academy/screens/onboadring/onboarding_screen.dart';
