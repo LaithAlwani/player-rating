@@ -74,14 +74,14 @@ class FirestoreService {
     Query<AppUser> query = _userRef
         .where("role", isNotEqualTo: "admin")
         .orderBy("role")
-        .orderBy("rating", descending: true)
         .limit(limit);
 
     if (lastDoc != null) {
       query = query.startAfterDocument(lastDoc);
     }
-
-    return query.get();
+    final test = query.get();
+    print("home view model test: ${test.toString()}");
+    return test;
   }
 
   static Future<QuerySnapshot<AppUser>> searchUsersPage({
@@ -105,7 +105,6 @@ class FirestoreService {
 
   // Stream of user updates (for real-time profile changes)
   static Stream<AppUser?> listenToUser(String uid) {
-    
     return _userRef.doc(uid).snapshots().map((snapshot) {
       if (!snapshot.exists) return null;
       return snapshot.data();
