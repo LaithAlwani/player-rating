@@ -229,7 +229,7 @@ Future<void> _onStatTap(
                       height: 50,
                       child: FilledButton(
                         style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
+                          backgroundColor: WidgetStateProperty.all(
                             const Color(0xFF37569a),
                           ),
                         ),
