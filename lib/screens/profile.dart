@@ -2,13 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:intl/intl.dart';
 import 'package:lanus_academy/main.dart';
 import 'package:lanus_academy/models/app_user.dart';
 import 'package:lanus_academy/provider/auth_provider.dart';
 import 'package:lanus_academy/provider/home_view_model_provider.dart';
-import 'package:lanus_academy/viewmodels/home_viewmodel.dart';
 import 'package:lanus_academy/widgets/player_stats_grid.dart';
 
 class Profile extends ConsumerStatefulWidget {
@@ -21,28 +19,22 @@ class Profile extends ConsumerStatefulWidget {
 }
 
 class _ProfileState extends ConsumerState<Profile> {
-  AppUser? profileUser;
-  // StreamSubscription? _profileSub;
-  bool isSaving = false;
-  late HomeViewModel homeVM;
-
   @override
   void initState() {
-    print(widget.user.displayName);
-    profileUser = widget.user;
-    // final authUser = ref.read(authNotifierProvider);
-    homeVM = HomeViewModel();
-    homeVM.listenToProfileUser(widget.user.uid, (newUser) {
-      if (mounted) {
-        setState(() => profileUser = newUser);
-      }
-    });
-
     super.initState();
+    // Fetch player if not already loaded
+    ref.read(homeViewModelProvider.notifier).fetchPlayerById(widget.user.uid);
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(homeViewModelProvider);
+
+    final user = state.players.firstWhere(
+      (p) => p.uid == widget.user.uid,
+      orElse: () => widget.user,
+    );
+
     return Scaffold(
       appBar: AppBar(
         leading: Navigator.canPop(context)
@@ -56,7 +48,6 @@ class _ProfileState extends ConsumerState<Profile> {
         actions: [
           IconButton(
             onPressed: () async {
-              homeVM.dispose();
               await ref.read(authNotifierProvider.notifier).signOut();
               if (context.mounted) {
                 Navigator.of(context).pushAndRemoveUntil(
@@ -85,10 +76,10 @@ class _ProfileState extends ConsumerState<Profile> {
                 top: 50,
                 right: 80,
                 child: Hero(
-                  tag: widget.user.uid,
+                  tag: user.uid,
                   child: ClipOval(
                     child: Image.network(
-                      widget.user.photoUrl ??
+                      user.photoUrl ??
                           "https://www.gravatar.com/avatar/placeholder",
                       width: 60 * 2, // CircleAvatar radius * 2
                       height: 60 * 2,
@@ -100,7 +91,7 @@ class _ProfileState extends ConsumerState<Profile> {
               Positioned(
                 top: 230,
                 child: Text(
-                  widget.user.displayName,
+                  user.displayName,
                   style: const TextStyle(
                     fontSize: 36,
                     fontWeight: FontWeight.bold,
@@ -112,7 +103,7 @@ class _ProfileState extends ConsumerState<Profile> {
               Positioned(
                 top: 285,
                 child: Text(
-                  widget.user.email,
+                  user.email,
                   style: const TextStyle(
                     fontSize: 14,
                     // color: Colors.white,
@@ -124,8 +115,7 @@ class _ProfileState extends ConsumerState<Profile> {
                 top: 30,
                 left: 80,
                 child: Text(
-                  profileUser?.overallRating.toString() ??
-                      widget.user.overallRating.toString(),
+                  user.overallRating.toString(),
                   style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -133,7 +123,7 @@ class _ProfileState extends ConsumerState<Profile> {
                 top: 95,
                 left: 95,
                 child: Text(
-                  widget.user.position,
+                  user.position,
                   style: const TextStyle(
                     fontSize: 18,
                     // color: Colors.white,
@@ -146,7 +136,7 @@ class _ProfileState extends ConsumerState<Profile> {
                 top: 150,
                 left: 75,
                 child: Text(
-                  DateFormat('dd/MM/yy').format(widget.user.lastLogin.toDate()),
+                  DateFormat('dd/MM/yy').format(user.lastLogin.toDate()),
 
                   style: const TextStyle(
                     fontSize: 16,
@@ -156,10 +146,7 @@ class _ProfileState extends ConsumerState<Profile> {
                   textAlign: TextAlign.center,
                 ),
               ),
-              Positioned(
-                bottom: 138,
-                child: PlayerStatsGrid(user: profileUser!),
-              ),
+              Positioned(bottom: 138, child: PlayerStatsGrid(user: user)),
             ],
           ),
         ),

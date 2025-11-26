@@ -112,7 +112,7 @@ Future<AppUser> _onStatTap(
   String label,
   int currentValue,
 ) async {
-  final homeVM = ref.read(homeViewModelProvider);
+  final homeVM = ref.read(homeViewModelProvider.notifier);
   AppUser updatedUser = user;
   await showStatEditor(context, label, currentValue, (newValue) async {
     final updatedStats = user.stats!.copywith(
@@ -253,15 +253,25 @@ Future<void> showStatEditor(
                   ),
                 ),
 
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    onSave(tempValue);
-                  },
-                  child: const Text("حفظ"),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(
+                          const Color(0xFF37569a),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        onSave(tempValue);
+                      },
+                      child: const Text("حفظ", style: TextStyle(fontSize: 18)),
+                    ),
+                  ),
                 ),
-
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
               ],
             ),
           );
