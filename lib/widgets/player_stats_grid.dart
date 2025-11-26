@@ -5,13 +5,12 @@ import 'package:lanus_academy/models/field_player_stats.dart';
 import 'package:lanus_academy/models/goal_keeper_stats.dart';
 import 'package:lanus_academy/provider/auth_provider.dart';
 import 'package:lanus_academy/provider/home_view_model_provider.dart';
-import 'package:lanus_academy/viewmodels/home_viewmodel.dart';
-// import 'package:provider/provider.dart';
 
 class PlayerStatsGrid extends ConsumerWidget {
   const PlayerStatsGrid({super.key, required this.user});
 
   final AppUser user;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final stats = user.stats;
@@ -75,7 +74,6 @@ class PlayerStatsGrid extends ConsumerWidget {
     return SizedBox(
       width: 250,
       child: Column(
-        spacing: 12,
         children: List.generate((items.length / 2).ceil(), (rowIndex) {
           final start = rowIndex * 2;
           final end = (start + 2).clamp(0, items.length);
@@ -87,7 +85,7 @@ class PlayerStatsGrid extends ConsumerWidget {
               return StatTile(
                 label: item["abbr"].toString(),
                 value: item["value"] as int,
-                onTap: () => _onStatTap(
+                onTap: (context, ref) => _onStatTap(
                   context,
                   ref,
                   user,
@@ -104,39 +102,10 @@ class PlayerStatsGrid extends ConsumerWidget {
   }
 }
 
-Future<AppUser> _onStatTap(
-  BuildContext context,
-  WidgetRef ref,
-  AppUser user,
-  String statKey,
-  String label,
-  int currentValue,
-) async {
-  final homeVM = ref.read(homeViewModelProvider.notifier);
-  AppUser updatedUser = user;
-  await showStatEditor(context, label, currentValue, (newValue) async {
-    final updatedStats = user.stats!.copywith(
-      fieldPlayer: user.isGoalkeeper
-          ? null
-          : updatedFP(user.stats!.fieldPlayer!, statKey, newValue),
-      goalkeeper: user.isGoalkeeper
-          ? updatedGK(user.stats!.goalkeeper!, statKey, newValue)
-          : null,
-    );
-
-    await homeVM.updateUser(user.uid, {"stats": updatedStats});
-
-    // Update local copy for UI rebuild
-    updatedUser = user.copyWith(stats: updatedStats);
-    homeVM.updateLocalPlayer(updatedUser);
-  });
-  return updatedUser;
-}
-
 class StatTile extends ConsumerWidget {
   final String label;
   final int value;
-  final void Function() onTap;
+  final void Function(BuildContext, WidgetRef) onTap;
 
   const StatTile({
     super.key,
@@ -151,11 +120,10 @@ class StatTile extends ConsumerWidget {
 
     return authState.when(
       data: (currentUser) {
-        final role = currentUser?.role;
-        final canEdit = role == "admin";
+        final canEdit = currentUser?.role == "admin";
 
         return GestureDetector(
-          onTap: canEdit ? onTap : null,
+          onTap: canEdit ? () => onTap(context, ref) : null,
           child: SizedBox(
             width: 100,
             child: Row(
@@ -182,97 +150,142 @@ class StatTile extends ConsumerWidget {
           ),
         );
       },
-
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(child: Text('Error: $e')),
     );
   }
 }
 
-Future<void> showStatEditor(
+Future<void> _onStatTap(
   BuildContext context,
+  WidgetRef ref,
+  AppUser user,
+  String statKey,
   String label,
   int currentValue,
-  void Function(int) onSave,
 ) async {
-  int tempValue = currentValue;
+  final homeVM = ref.read(homeViewModelProvider.notifier);
 
   await showModalBottomSheet(
     context: context,
+    isScrollControlled: true,
     backgroundColor: Colors.white,
     builder: (context) {
+      int tempValue = currentValue;
+      bool isSaving = false;
+
       return StatefulBuilder(
         builder: (context, setState) {
-          return SizedBox(
-            height: 350,
-            child: Column(
-              children: [
-                const SizedBox(height: 16),
-                Text(
-                  label,
-                  style: const TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                const SizedBox(height: 16),
-
-                Expanded(
-                  child: ListWheelScrollView.useDelegate(
-                    itemExtent: 50,
-                    perspective: 0.003,
-                    controller: FixedExtentScrollController(
-                      initialItem: currentValue - 1,
-                    ),
-                    onSelectedItemChanged: (index) {
-                      setState(() {
-                        tempValue = index + 1;
-                      });
-                    },
-                    childDelegate: ListWheelChildBuilderDelegate(
-                      builder: (context, index) {
-                        if (index < 0) return null;
-                        if (index >= 99) return null;
-                        return Center(
-                          child: Text(
-                            (index + 1).toString(),
-                            style: TextStyle(
-                              fontSize: (index + 1) == tempValue ? 28 : 22,
-                              fontWeight: (index + 1) == tempValue
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                              color: (index + 1) == tempValue
-                                  ? Colors.blue
-                                  : Colors.black,
-                            ),
-                          ),
-                        );
-                      },
+          return Padding(
+            padding: MediaQuery.of(context).viewInsets,
+            child: SizedBox(
+              height: 350,
+              child: Column(
+                children: [
+                  const SizedBox(height: 16),
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: FilledButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(
-                          const Color(0xFF37569a),
-                        ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: ListWheelScrollView.useDelegate(
+                      itemExtent: 50,
+                      perspective: 0.003,
+                      controller: FixedExtentScrollController(
+                        initialItem: currentValue - 1,
                       ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                        onSave(tempValue);
-                      },
-                      child: const Text("حفظ", style: TextStyle(fontSize: 18)),
+                      onSelectedItemChanged: (index) =>
+                          setState(() => tempValue = index + 1),
+                      childDelegate: ListWheelChildBuilderDelegate(
+                        builder: (context, index) {
+                          if (index < 0 || index >= 99) return null;
+                          return Center(
+                            child: Text(
+                              (index + 1).toString(),
+                              style: TextStyle(
+                                fontSize: (index + 1) == tempValue ? 28 : 22,
+                                fontWeight: (index + 1) == tempValue
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: (index + 1) == tempValue
+                                    ? Colors.blue
+                                    : Colors.black,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 24),
-              ],
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: FilledButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                            const Color(0xFF37569a),
+                          ),
+                        ),
+                        onPressed: isSaving
+                            ? null
+                            : () async {
+                                setState(() => isSaving = true);
+
+                                final updatedStats = user.stats!.copywith(
+                                  fieldPlayer: user.isGoalkeeper
+                                      ? null
+                                      : updatedFP(
+                                          user.stats!.fieldPlayer!,
+                                          statKey,
+                                          tempValue,
+                                        ),
+                                  goalkeeper: user.isGoalkeeper
+                                      ? updatedGK(
+                                          user.stats!.goalkeeper!,
+                                          statKey,
+                                          tempValue,
+                                        )
+                                      : null,
+                                );
+
+                                await homeVM.updateUser(user.uid, {
+                                  "stats": updatedStats,
+                                });
+                                homeVM.updateLocalPlayer(
+                                  user.copyWith(stats: updatedStats),
+                                );
+
+                                if (context.mounted) Navigator.pop(context);
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("✅ تم الحفظ بنجاح"),
+                                  ),
+                                );
+                              },
+                        child: isSaving
+                            ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Text("حفظ", style: TextStyle(fontSize: 18)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                ],
+              ),
             ),
           );
         },
@@ -281,6 +294,7 @@ Future<void> showStatEditor(
   );
 }
 
+/// Helper functions to update stats
 GoalkeeperStats updatedGK(GoalkeeperStats old, String key, int value) {
   switch (key) {
     case "diving":
