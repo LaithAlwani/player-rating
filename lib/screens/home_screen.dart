@@ -60,6 +60,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               actions: [
                 IconButton(
                   onPressed: () async {
+                    
                     await ref.read(authNotifierProvider.notifier).signOut();
                   },
                   icon: const Icon(Icons.logout),

@@ -105,6 +105,7 @@ class FirestoreService {
 
   // Stream of user updates (for real-time profile changes)
   static Stream<AppUser?> listenToUser(String uid) {
+    
     return _userRef.doc(uid).snapshots().map((snapshot) {
       if (!snapshot.exists) return null;
       return snapshot.data();

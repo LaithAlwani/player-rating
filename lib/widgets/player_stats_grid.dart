@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lanus_academy/models/app_user.dart';
 import 'package:lanus_academy/models/field_player_stats.dart';
 import 'package:lanus_academy/models/goal_keeper_stats.dart';
+import 'package:lanus_academy/provider/auth_provider.dart';
 import 'package:lanus_academy/provider/home_view_model_provider.dart';
 import 'package:lanus_academy/viewmodels/home_viewmodel.dart';
 // import 'package:provider/provider.dart';
@@ -103,7 +104,7 @@ class PlayerStatsGrid extends ConsumerWidget {
   }
 }
 
-void _onStatTap(
+Future<AppUser> _onStatTap(
   BuildContext context,
   WidgetRef ref,
   AppUser user,
@@ -112,7 +113,7 @@ void _onStatTap(
   int currentValue,
 ) async {
   final homeVM = ref.read(homeViewModelProvider);
-
+  AppUser updatedUser = user;
   await showStatEditor(context, label, currentValue, (newValue) async {
     final updatedStats = user.stats!.copywith(
       fieldPlayer: user.isGoalkeeper
@@ -126,12 +127,13 @@ void _onStatTap(
     await homeVM.updateUser(user.uid, {"stats": updatedStats});
 
     // Update local copy for UI rebuild
-    final updatedUser = user.copyWith(stats: updatedStats);
+    updatedUser = user.copyWith(stats: updatedStats);
     homeVM.updateLocalPlayer(updatedUser);
   });
+  return updatedUser;
 }
 
-class StatTile extends StatelessWidget {
+class StatTile extends ConsumerWidget {
   final String label;
   final int value;
   final void Function() onTap;
@@ -144,33 +146,45 @@ class StatTile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: 100,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text(
-              "$label ",
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authNotifierProvider);
+
+    return authState.when(
+      data: (currentUser) {
+        final role = currentUser?.role;
+        final canEdit = role == "admin";
+
+        return GestureDetector(
+          onTap: canEdit ? onTap : null,
+          child: SizedBox(
+            width: 100,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  "$label ",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  value.toString(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-            Text(
-              value.toString(),
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
+
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text('Error: $e')),
     );
   }
 }

@@ -35,7 +35,7 @@ class HomeViewModel extends ChangeNotifier {
 
     // Attach per-user listeners
     for (final player in players) {
-      _listenToPlayer(player.uid);
+      listenToPlayer(player.uid);
     }
 
     isLoading = false;
@@ -74,7 +74,7 @@ class HomeViewModel extends ChangeNotifier {
 
     // Attach listeners for new users
     for (final player in newPlayers) {
-      _listenToPlayer(player.uid);
+      listenToPlayer(player.uid);
     }
 
     isLoading = false;
@@ -132,7 +132,7 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   /// Listen to a single user
-  void _listenToPlayer(String uid) {
+  void listenToPlayer(String uid) {
     if (_listeners.containsKey(uid)) return;
 
     final sub = FirestoreService.listenToUser(uid).listen((updatedUser) {
@@ -141,12 +141,22 @@ class HomeViewModel extends ChangeNotifier {
       final index = players.indexWhere((p) => p.uid == uid);
       if (index != -1) {
         players[index] = updatedUser;
-        players.sort((a, b) => (b.rating ?? 0).compareTo(a.rating ?? 0));
         notifyListeners();
       }
     });
 
     _listeners[uid] = sub;
+  }
+
+  StreamSubscription<AppUser?> listenToProfileUser(
+    String uid,
+    void Function(AppUser) onUpdate,
+  ) {
+    return FirestoreService.listenToUser(uid).listen((updatedUser) {
+      if (updatedUser != null) {
+        onUpdate(updatedUser);
+      }
+    });
   }
 
   Future<void> searchPlayers(String query) async {

@@ -58,9 +58,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     });
     String? imageUrl;
     // Save user data (to Firestore, local storage, etc.)
-    debugPrint("Name: ${_nameController.text}");
-    debugPrint("Position: ${_positionController.text}");
-    debugPrint("Image: $_selectedImageFile");
     if (_selectedImageFile != null) {
       imageUrl = await StorageService.uploadImageAndGetUrl(
         _selectedImageFile!,
@@ -83,12 +80,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     } else {
       updatedStats = PlayerStats(
         goalkeeper: GoalkeeperStats(
-          diving: 60,
-          handling: 60,
-          kicking: 60,
-          reflexes: 60,
-          positioning: 60,
-          speed: 60,
+          diving: 50,
+          handling: 50,
+          kicking: 50,
+          reflexes: 50,
+          positioning: 50,
+          speed: 50,
         ),
       );
     }

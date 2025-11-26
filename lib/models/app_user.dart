@@ -8,7 +8,6 @@ class AppUser {
     required this.displayNameLower,
     required this.email,
     required this.position,
-    this.rating = 0,
     this.photoUrl,
     this.isVerified = false,
     this.role = "user",
@@ -25,7 +24,6 @@ class AppUser {
   final String position;
   final String email;
   final String? photoUrl;
-  final int? rating;
   final bool isVerified;
   final String role;
   final PlayerStats? stats;
@@ -35,10 +33,7 @@ class AppUser {
 
   bool get isGoalkeeper => position == "GK";
 
-  int get overallRating {
-    if (stats == null) return 0;
-    return stats!.overall; // already int
-  }
+  int get overallRating => stats?.overall ?? 0;
 
   // ---------- Serialization ----------
 
@@ -55,7 +50,6 @@ class AppUser {
       position: data['position'],
       email: data['email'],
       photoUrl: data['photoUrl'],
-      rating: data['rating'],
       isVerified: data['isVerified'] ?? false,
       role: data['role'] ?? 'user',
       stats: PlayerStats.fromFirestore(data['stats']),
@@ -73,7 +67,6 @@ class AppUser {
       'position': position,
       'email': email,
       'photoUrl': photoUrl,
-      'rating': rating,
       'isVerified': isVerified,
       'role': role,
       'createdAt': createdAt,
@@ -90,7 +83,6 @@ class AppUser {
     String? position,
     String? email,
     String? photoUrl,
-    int? rating,
     bool? isVerified,
     String? role,
     PlayerStats? stats,
@@ -104,7 +96,6 @@ class AppUser {
       email: email ?? this.email,
       position: position ?? this.position,
       photoUrl: photoUrl ?? this.photoUrl,
-      rating: rating ?? this.rating,
       isVerified: isVerified ?? this.isVerified,
       role: role ?? this.role,
       createdAt: createdAt,
@@ -122,7 +113,6 @@ class AppUser {
       position: data['position'],
       email: data['email'],
       photoUrl: data['photoUrl'],
-      rating: data['rating'],
       isVerified: data['isVerified'] ?? false,
       role: data['role'] ?? 'user',
       updatedAt: data['updatedAt'] ?? Timestamp.now(),
