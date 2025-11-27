@@ -40,9 +40,7 @@ Future<void> showValuePickerBottomSheet({
                     child: ListWheelScrollView.useDelegate(
                       itemExtent: 50,
                       perspective: 0.003,
-                      controller: FixedExtentScrollController(
-                        initialItem: initialValue - 1,
-                      ),
+                      controller: FixedExtentScrollController(initialItem: 50),
                       onSelectedItemChanged: (index) =>
                           setState(() => tempValue = index + 1),
                       childDelegate: ListWheelChildBuilderDelegate(

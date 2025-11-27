@@ -97,6 +97,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       position: _positionController.text,
       photoUrl: imageUrl,
       stats: updatedStats,
+      points: 0,
     );
 
     try {

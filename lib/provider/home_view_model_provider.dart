@@ -60,7 +60,7 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
     );
     final snapshot = await FirestoreService.fetchUsersPage(limit: pageSize);
     final playersList = snapshot.docs.map((d) => d.data()).toList();
-    playersList.sort((a, b) => b.points.compareTo(a.points));
+    playersList.sort((a, b) => (b.points ?? 0).compareTo(a.points ?? 0));
 
     final lastDoc = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
     final hasMore = snapshot.docs.length >= pageSize;
@@ -95,7 +95,7 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
     }
 
     final newPlayers = snapshot.docs.map((d) => d.data()).toList();
-    newPlayers.sort((a, b) => b.points.compareTo(a.points));
+    newPlayers.sort((a, b) => (b.points ?? 0).compareTo(a.points ?? 0));
 
     final lastDoc = snapshot.docs.isNotEmpty
         ? snapshot.docs.last
@@ -143,7 +143,7 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
         .where((player) => player.role != "admin")
         .toList();
     print(newPlayers);
-    newPlayers.sort((a, b) => b.points.compareTo(a.points));
+    newPlayers.sort((a, b) => (b.points ?? 0).compareTo(a.points ?? 0));
 
     final lastDoc = snapshot.docs.isNotEmpty
         ? snapshot.docs.last
@@ -170,7 +170,7 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
     if (index != -1) {
       final updatedPlayers = [...state.players];
       updatedPlayers[index] = updatedUser;
-      updatedPlayers.sort((a, b) => b.points.compareTo(a.points));
+      updatedPlayers.sort((a, b) => (b.points ?? 0).compareTo(a.points ?? 0));
 
       state = state.copyWith(players: updatedPlayers);
     }

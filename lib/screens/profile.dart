@@ -149,42 +149,48 @@ class _ProfileState extends ConsumerState<Profile> {
               ),
               Positioned(
                 top: 180,
-                left: 85,
-                child: GestureDetector(
-                  onTap: () async {
-                    await showValuePickerBottomSheet(
-                      context: context,
-                      title: "نقاط",
-                      initialValue: user.points,
-                      onSave: (newValue) async {
-                        int totalPoints = (user.points) + newValue;
-                        final homeMV = ref.read(homeViewModelProvider.notifier);
-                        await homeMV.updateUser(user.uid, {
-                          "points": totalPoints,
-                        });
-                        homeMV.updateLocalPlayer(
-                          user.copyWith(points: totalPoints),
-                        );
-                      },
-                    );
-                  },
-                  child: Column(
-                    children: [
-                      Text(
-                        user.points.toString(),
-                        style: TextStyle(
-                          fontSize: 48,
-                          fontWeight: FontWeight.bold,
+                left: 90,
+                width: 30,
+                child: SizedBox(
+                  child: GestureDetector(
+                    onTap: () async {
+                      await showValuePickerBottomSheet(
+                        context: context,
+                        title: "نقاط",
+                        initialValue: user.points ?? 0,
+                        onSave: (newValue) async {
+                          int totalPoints = (user.points ?? 0) + newValue;
+                          final homeMV = ref.read(
+                            homeViewModelProvider.notifier,
+                          );
+                          await homeMV.updateUser(user.uid, {
+                            "points": totalPoints,
+                          });
+                          homeMV.updateLocalPlayer(
+                            user.copyWith(points: totalPoints),
+                          );
+                        },
+                      );
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          user.points.toString(),
+                          style: TextStyle(
+                            fontSize: 48,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      Text(
-                        "PTS",
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
+                        Text(
+                          "PTS",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

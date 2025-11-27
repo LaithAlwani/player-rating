@@ -12,7 +12,7 @@ class AppUser {
     this.isVerified = false,
     this.role = "user",
     this.stats,
-    this.points = 0,
+    this.points,
     Timestamp? createdAt,
     Timestamp? updatedAt,
     Timestamp? lastLogin,
@@ -27,7 +27,7 @@ class AppUser {
   final String? photoUrl;
   final bool isVerified;
   final String role;
-  final int points;
+  final int? points;
   final PlayerStats? stats;
   final Timestamp createdAt;
   final Timestamp updatedAt;
@@ -54,7 +54,7 @@ class AppUser {
       photoUrl: data['photoUrl'],
       isVerified: data['isVerified'] ?? false,
       role: data['role'] ?? 'user',
-      points: data['points'],
+      points: data['points'] ?? 0,
       stats: PlayerStats.fromFirestore(data['stats']),
       createdAt: data['createdAt'] ?? Timestamp.now(),
       updatedAt: data['updatedAt'] ?? Timestamp.now(),
@@ -121,7 +121,7 @@ class AppUser {
       photoUrl: data['photoUrl'],
       isVerified: data['isVerified'] ?? false,
       role: data['role'] ?? 'user',
-      points: data['points'],
+      points: data['points'] ?? 0,
       updatedAt: data['updatedAt'] ?? Timestamp.now(),
       lastLogin: data['lastLogin'] ?? Timestamp.now(),
       stats: data['stats'] != null ? stats!.merge(data['stats']) : stats,

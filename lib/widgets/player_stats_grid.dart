@@ -20,26 +20,40 @@ class PlayerStatsGrid extends ConsumerWidget {
     final isGK = user.isGoalkeeper;
     final items = isGK
         ? [
-            {"abbr": "DIV", "key": "diving", "value": stats.goalkeeper!.diving},
+            {
+              "abbr": "DIV",
+              "key": "diving",
+              "arabic": "القفز",
+              "value": stats.goalkeeper!.diving,
+            },
             {
               "abbr": "HAD",
               "key": "handling",
+              "arabic": "التعامل مع الكرة",
               "value": stats.goalkeeper!.handling,
             },
             {
               "abbr": "KIC",
               "key": "kicking",
+              "arabic": "الركل",
               "value": stats.goalkeeper!.kicking,
             },
             {
               "abbr": "REF",
               "key": "reflexes",
+              "arabic": "ردة الفعل",
               "value": stats.goalkeeper!.reflexes,
             },
-            {"abbr": "SPE", "key": "speed", "value": stats.goalkeeper!.speed},
+            {
+              "abbr": "SPE",
+              "key": "speed",
+              "arabic": "السرعة",
+              "value": stats.goalkeeper!.speed,
+            },
             {
               "abbr": "POS",
               "key": "positioning",
+              "arabic": "التمركز",
               "value": stats.goalkeeper!.positioning,
             },
           ]
@@ -47,27 +61,37 @@ class PlayerStatsGrid extends ConsumerWidget {
             {
               "abbr": "DRI",
               "key": "dribbling",
+              "arabic": "المناورة",
               "value": stats.fieldPlayer!.dribbling,
             },
-            {"abbr": "PAC", "key": "pace", "value": stats.fieldPlayer!.pace},
+            {
+              "abbr": "PAC",
+              "key": "pace",
+              "arabic": "السرعة",
+              "value": stats.fieldPlayer!.pace,
+            },
             {
               "abbr": "DEF",
               "key": "defending",
+              "arabic": "الدفاع",
               "value": stats.fieldPlayer!.defending,
             },
             {
               "abbr": "SHO",
               "key": "shooting",
+              "arabic": "التسديد",
               "value": stats.fieldPlayer!.shooting,
             },
             {
               "abbr": "PHY",
               "key": "physical",
+              "arabic": "القوة البدنية",
               "value": stats.fieldPlayer!.physical,
             },
             {
               "abbr": "PAS",
               "key": "passing",
+              "arabic": "التمرير",
               "value": stats.fieldPlayer!.passing,
             },
           ];
@@ -91,7 +115,7 @@ class PlayerStatsGrid extends ConsumerWidget {
                   context,
                   ref,
                   user,
-                  item["key"].toString(),
+                  item["arabic"].toString(),
                   item["abbr"].toString(),
                   item["value"] as int,
                 ),
@@ -189,7 +213,6 @@ Future<void> _onStatTap(
 
       await homeVM.updateUser(user.uid, {"stats": updatedStats});
       homeVM.updateLocalPlayer(user.copyWith(stats: updatedStats));
-
     },
   );
 }
