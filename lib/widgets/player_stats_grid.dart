@@ -5,6 +5,7 @@ import 'package:lanus_academy/models/field_player_stats.dart';
 import 'package:lanus_academy/models/goal_keeper_stats.dart';
 import 'package:lanus_academy/provider/auth_provider.dart';
 import 'package:lanus_academy/provider/home_view_model_provider.dart';
+import 'package:lanus_academy/widgets/value_picker_bottom_sheet.dart';
 
 class PlayerStatsGrid extends ConsumerWidget {
   const PlayerStatsGrid({super.key, required this.user});
@@ -125,7 +126,7 @@ class StatTile extends ConsumerWidget {
 
         return GestureDetector(
           onTap: canEdit ? () => onTap(context, ref) : null,
-          child: Container(
+          child: SizedBox(
             width: 120,
             // color: Colors.green,
             child: Padding(
@@ -172,130 +173,23 @@ Future<void> _onStatTap(
 ) async {
   final homeVM = ref.read(homeViewModelProvider.notifier);
 
-  await showModalBottomSheet(
+  await showValuePickerBottomSheet(
     context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.white,
-    builder: (context) {
-      int tempValue = currentValue;
-      bool isSaving = false;
-
-      return StatefulBuilder(
-        builder: (context, setState) {
-          return Padding(
-            padding: MediaQuery.of(context).viewInsets,
-            child: SizedBox(
-              height: 350,
-              child: Column(
-                children: [
-                  const SizedBox(height: 16),
-                  Text(
-                    statKey.toUpperCase(),
-                    style: const TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    child: ListWheelScrollView.useDelegate(
-                      itemExtent: 50,
-                      perspective: 0.003,
-                      controller: FixedExtentScrollController(
-                        initialItem: currentValue - 1,
-                      ),
-                      onSelectedItemChanged: (index) =>
-                          setState(() => tempValue = index + 1),
-                      childDelegate: ListWheelChildBuilderDelegate(
-                        builder: (context, index) {
-                          if (index < 0 || index >= 99) return null;
-                          return Center(
-                            child: Text(
-                              (index + 1).toString(),
-                              style: TextStyle(
-                                fontSize: (index + 1) == tempValue ? 28 : 22,
-                                fontWeight: (index + 1) == tempValue
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                                color: (index + 1) == tempValue
-                                    ? Colors.blue
-                                    : Colors.black,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: FilledButton(
-                        style: ButtonStyle(
-                          backgroundColor: WidgetStateProperty.all(
-                            const Color(0xFF37569a),
-                          ),
-                        ),
-                        onPressed: isSaving
-                            ? null
-                            : () async {
-                                setState(() => isSaving = true);
-
-                                final updatedStats = user.stats!.copywith(
-                                  fieldPlayer: user.isGoalkeeper
-                                      ? null
-                                      : updatedFP(
-                                          user.stats!.fieldPlayer!,
-                                          statKey,
-                                          tempValue,
-                                        ),
-                                  goalkeeper: user.isGoalkeeper
-                                      ? updatedGK(
-                                          user.stats!.goalkeeper!,
-                                          statKey,
-                                          tempValue,
-                                        )
-                                      : null,
-                                );
-
-                                await homeVM.updateUser(user.uid, {
-                                  "stats": updatedStats,
-                                });
-                                homeVM.updateLocalPlayer(
-                                  user.copyWith(stats: updatedStats),
-                                );
-
-                                if (context.mounted) Navigator.pop(context);
-
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("✅ تم الحفظ بنجاح"),
-                                  ),
-                                );
-                              },
-                        child: isSaving
-                            ? const SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : const Text("حفظ", style: TextStyle(fontSize: 18)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                ],
-              ),
-            ),
-          );
-        },
+    title: statKey.toUpperCase(),
+    initialValue: currentValue,
+    onSave: (newValue) async {
+      final updatedStats = user.stats!.copywith(
+        fieldPlayer: user.isGoalkeeper
+            ? null
+            : updatedFP(user.stats!.fieldPlayer!, statKey, newValue),
+        goalkeeper: user.isGoalkeeper
+            ? updatedGK(user.stats!.goalkeeper!, statKey, newValue)
+            : null,
       );
+
+      await homeVM.updateUser(user.uid, {"stats": updatedStats});
+      homeVM.updateLocalPlayer(user.copyWith(stats: updatedStats));
+
     },
   );
 }

@@ -8,6 +8,7 @@ import 'package:lanus_academy/models/app_user.dart';
 import 'package:lanus_academy/provider/auth_provider.dart';
 import 'package:lanus_academy/provider/home_view_model_provider.dart';
 import 'package:lanus_academy/widgets/player_stats_grid.dart';
+import 'package:lanus_academy/widgets/value_picker_bottom_sheet.dart';
 
 class Profile extends ConsumerStatefulWidget {
   const Profile({super.key, required this.user});
@@ -148,24 +149,43 @@ class _ProfileState extends ConsumerState<Profile> {
               ),
               Positioned(
                 top: 180,
-                left: 95,
-                child: Column(
-                  children: [
-                    Text(
-                      user.points.toString(),
-                      style: TextStyle(
-                        fontSize: 48,
-                        fontWeight: FontWeight.bold,
+                left: 85,
+                child: GestureDetector(
+                  onTap: () async {
+                    await showValuePickerBottomSheet(
+                      context: context,
+                      title: "نقاط",
+                      initialValue: user.points ?? 0,
+                      onSave: (newValue) async {
+                        int totalPoints = (user.points ?? 0) + newValue;
+                        final homeMV = ref.read(homeViewModelProvider.notifier);
+                        await homeMV.updateUser(user.uid, {
+                          "points": totalPoints,
+                        });
+                        homeMV.updateLocalPlayer(
+                          user.copyWith(points: totalPoints),
+                        );
+                      },
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      Text(
+                        user.points.toString(),
+                        style: TextStyle(
+                          fontSize: 48,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    Text(
-                      "PTS",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
+                      Text(
+                        "PTS",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               Positioned(bottom: 138, child: PlayerStatsGrid(user: user)),
