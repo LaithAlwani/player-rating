@@ -48,6 +48,8 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
     loadInitial();
   }
 
+  final int pageSize = 10;
+
   /// Load first page
   Future<void> loadInitial() async {
     state = state.copyWith(
@@ -56,12 +58,12 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
       lastDoc: null,
       hasMore: true,
     );
-    final snapshot = await FirestoreService.fetchUsersPage(limit: 10);
+    final snapshot = await FirestoreService.fetchUsersPage(limit: pageSize);
     final playersList = snapshot.docs.map((d) => d.data()).toList();
     playersList.sort((a, b) => b.overallRating.compareTo(a.overallRating));
 
     final lastDoc = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
-    final hasMore = snapshot.docs.length >= 10;
+    final hasMore = snapshot.docs.length >= pageSize;
 
     state = state.copyWith(
       players: playersList,
@@ -82,13 +84,13 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
     if (state.currentSearch.isEmpty) {
       snapshot = await FirestoreService.fetchUsersPage(
         lastDoc: state.lastDoc,
-        limit: 10,
+        limit: pageSize,
       );
     } else {
       snapshot = await FirestoreService.searchUsersPage(
         queryText: state.currentSearch,
         lastDoc: state.lastDoc,
-        limit: 10,
+        limit: pageSize,
       );
     }
 
@@ -98,7 +100,7 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
     final lastDoc = snapshot.docs.isNotEmpty
         ? snapshot.docs.last
         : state.lastDoc;
-    final hasMore = snapshot.docs.length >= 10;
+    final hasMore = snapshot.docs.length >= pageSize;
 
     state = state.copyWith(
       players: [...state.players, ...newPlayers],
@@ -146,7 +148,7 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
     final lastDoc = snapshot.docs.isNotEmpty
         ? snapshot.docs.last
         : state.lastDoc;
-    final hasMore = snapshot.docs.length >= 10;
+    final hasMore = snapshot.docs.length >= pageSize;
 
     state = state.copyWith(
       players: [...newPlayers],
