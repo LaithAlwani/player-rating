@@ -32,9 +32,18 @@ class PlayerTile extends StatelessWidget {
           fontFamily: 'Roboto',
         ),
       ),
-      trailing: Text(
-        "${player.overallRating}",
-        style: const TextStyle(fontSize: 18),
+      trailing: Column(
+        children: [
+          Text(player.points.toString(), style: const TextStyle(fontSize: 18)),
+          Text(
+            "${player.overallRating} ${player.position}",
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[600],
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ],
       ),
       onTap: onTap,
     );
