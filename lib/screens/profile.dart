@@ -155,9 +155,9 @@ class _ProfileState extends ConsumerState<Profile> {
                     await showValuePickerBottomSheet(
                       context: context,
                       title: "نقاط",
-                      initialValue: user.points ?? 0,
+                      initialValue: user.points,
                       onSave: (newValue) async {
-                        int totalPoints = (user.points ?? 0) + newValue;
+                        int totalPoints = (user.points) + newValue;
                         final homeMV = ref.read(homeViewModelProvider.notifier);
                         await homeMV.updateUser(user.uid, {
                           "points": totalPoints,
