@@ -73,10 +73,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             children: [
               // Search bar
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16,
-                  horizontal: 24,
-                ),
+                padding: const EdgeInsets.only(bottom: 16, right: 24, left: 24),
                 child: Container(
                   decoration: const BoxDecoration(
                     border: Border(
