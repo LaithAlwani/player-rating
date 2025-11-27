@@ -12,6 +12,7 @@ class AppUser {
     this.isVerified = false,
     this.role = "user",
     this.stats,
+    this.points,
     Timestamp? createdAt,
     Timestamp? updatedAt,
     Timestamp? lastLogin,
@@ -26,6 +27,7 @@ class AppUser {
   final String? photoUrl;
   final bool isVerified;
   final String role;
+  final int points;
   final PlayerStats? stats;
   final Timestamp createdAt;
   final Timestamp updatedAt;
@@ -52,6 +54,7 @@ class AppUser {
       photoUrl: data['photoUrl'],
       isVerified: data['isVerified'] ?? false,
       role: data['role'] ?? 'user',
+      points: data['points'] ?? 0,
       stats: PlayerStats.fromFirestore(data['stats']),
       createdAt: data['createdAt'] ?? Timestamp.now(),
       updatedAt: data['updatedAt'] ?? Timestamp.now(),
@@ -69,6 +72,7 @@ class AppUser {
       'photoUrl': photoUrl,
       'isVerified': isVerified,
       'role': role,
+      'points': points,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'lastLogin': lastLogin,
@@ -85,6 +89,7 @@ class AppUser {
     String? photoUrl,
     bool? isVerified,
     String? role,
+    int? points,
     PlayerStats? stats,
     Timestamp? updatedAt,
     Timestamp? lastLogin,
@@ -98,6 +103,7 @@ class AppUser {
       photoUrl: photoUrl ?? this.photoUrl,
       isVerified: isVerified ?? this.isVerified,
       role: role ?? this.role,
+      points: points ?? this.points,
       createdAt: createdAt,
       stats: stats ?? this.stats,
       updatedAt: updatedAt ?? Timestamp.now(),
@@ -115,6 +121,7 @@ class AppUser {
       photoUrl: data['photoUrl'],
       isVerified: data['isVerified'] ?? false,
       role: data['role'] ?? 'user',
+      points: data['points'] ?? 0,
       updatedAt: data['updatedAt'] ?? Timestamp.now(),
       lastLogin: data['lastLogin'] ?? Timestamp.now(),
       stats: data['stats'] != null ? stats!.merge(data['stats']) : stats,
