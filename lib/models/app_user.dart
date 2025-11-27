@@ -27,7 +27,7 @@ class AppUser {
   final String? photoUrl;
   final bool isVerified;
   final String role;
-  final int points;
+  final int? points;
   final PlayerStats? stats;
   final Timestamp createdAt;
   final Timestamp updatedAt;
