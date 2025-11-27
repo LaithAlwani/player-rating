@@ -146,6 +146,28 @@ class _ProfileState extends ConsumerState<Profile> {
                   textAlign: TextAlign.center,
                 ),
               ),
+              Positioned(
+                top: 180,
+                left: 95,
+                child: Column(
+                  children: [
+                    Text(
+                      user.points.toString(),
+                      style: TextStyle(
+                        fontSize: 48,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "PTS",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Positioned(bottom: 138, child: PlayerStatsGrid(user: user)),
             ],
           ),
