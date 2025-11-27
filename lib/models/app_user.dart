@@ -120,4 +120,9 @@ class AppUser {
       stats: data['stats'] != null ? stats!.merge(data['stats']) : stats,
     );
   }
+
+  @override
+  String toString() {
+    return 'AppUser(uid: $uid, displayName: $displayName, role: $role, email: $email)';
+  }
 }

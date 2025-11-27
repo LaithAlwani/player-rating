@@ -69,7 +69,7 @@ class FirestoreService {
 
   static Future<QuerySnapshot<AppUser>> fetchUsersPage({
     DocumentSnapshot<AppUser>? lastDoc,
-    int limit = 20,
+    int limit = 10,
   }) {
     Query<AppUser> query = _userRef
         .where("role", isNotEqualTo: "admin")
@@ -89,8 +89,8 @@ class FirestoreService {
     DocumentSnapshot<AppUser>? lastDoc,
     int limit = 10,
   }) {
+
     Query<AppUser> query = _userRef
-        .where("role", isNotEqualTo: "admin")
         .orderBy("displayNameLower")
         .startAt([queryText])
         .endAt(["$queryText\uf8ff"])

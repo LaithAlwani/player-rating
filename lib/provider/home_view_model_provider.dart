@@ -56,12 +56,12 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
       lastDoc: null,
       hasMore: true,
     );
-    final snapshot = await FirestoreService.fetchUsersPage(limit: 20);
+    final snapshot = await FirestoreService.fetchUsersPage(limit: 10);
     final playersList = snapshot.docs.map((d) => d.data()).toList();
     playersList.sort((a, b) => b.overallRating.compareTo(a.overallRating));
 
     final lastDoc = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
-    final hasMore = snapshot.docs.length >= 20;
+    final hasMore = snapshot.docs.length >= 10;
 
     state = state.copyWith(
       players: playersList,
@@ -82,21 +82,23 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
     if (state.currentSearch.isEmpty) {
       snapshot = await FirestoreService.fetchUsersPage(
         lastDoc: state.lastDoc,
-        limit: 20,
+        limit: 10,
       );
     } else {
       snapshot = await FirestoreService.searchUsersPage(
         queryText: state.currentSearch,
         lastDoc: state.lastDoc,
-        limit: 20,
+        limit: 10,
       );
     }
 
     final newPlayers = snapshot.docs.map((d) => d.data()).toList();
+    newPlayers.sort((a, b) => b.overallRating.compareTo(a.overallRating));
+
     final lastDoc = snapshot.docs.isNotEmpty
         ? snapshot.docs.last
         : state.lastDoc;
-    final hasMore = snapshot.docs.length >= 20;
+    final hasMore = snapshot.docs.length >= 10;
 
     state = state.copyWith(
       players: [...state.players, ...newPlayers],
@@ -126,7 +128,32 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
   /// Search
   Future<void> searchPlayers(String query) async {
     state = state.copyWith(currentSearch: query.trim().toLowerCase());
-    await loadInitial();
+    if (state.currentSearch == "") return loadInitial();
+
+    QuerySnapshot<AppUser> snapshot = await FirestoreService.searchUsersPage(
+      queryText: state.currentSearch,
+      lastDoc: state.lastDoc,
+      limit: 5,
+    );
+
+    final newPlayers = snapshot.docs
+        .map((d) => d.data())
+        .where((player) => player.role != "admin")
+        .toList();
+    print(newPlayers);
+    newPlayers.sort((a, b) => b.overallRating.compareTo(a.overallRating));
+
+    final lastDoc = snapshot.docs.isNotEmpty
+        ? snapshot.docs.last
+        : state.lastDoc;
+    final hasMore = snapshot.docs.length >= 10;
+
+    state = state.copyWith(
+      players: [...newPlayers],
+      lastDoc: lastDoc,
+      hasMore: hasMore,
+      isLoading: false,
+    );
   }
 
   /// Refresh all players

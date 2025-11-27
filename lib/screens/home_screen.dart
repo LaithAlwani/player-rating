@@ -68,11 +68,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (!state.isLoading && state.players.isEmpty) {
-            // Finished loading but still empty
-            return const Center(child: Text("لا يوجد لاعبين"));
-          }
-
           // Loaded & has players
           return Column(
             children: [
@@ -108,42 +103,50 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               Expanded(
                 child: RefreshIndicator(
                   onRefresh: () async => homeVM.refreshPlayers(),
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    itemCount: state.players.length + (state.hasMore ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      if (index == state.players.length) {
-                        return const Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Center(child: CircularProgressIndicator()),
-                        );
-                      }
+                  child: !state.isLoading && state.players.isEmpty
+                      ?
+                        // Finished loading but still empty
+                        const Center(child: Text("لا يوجد لاعبين"))
+                      : ListView.builder(
+                          controller: _scrollController,
+                          itemCount:
+                              state.players.length + (state.hasMore ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index == state.players.length) {
+                              return const Padding(
+                                padding: EdgeInsets.all(16),
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+                            }
 
-                      final player = state.players[index];
+                            final player = state.players[index];
 
-                      return Dismissible(
-                        key: Key(player.uid),
-                        direction: DismissDirection.endToStart,
-                        confirmDismiss: (dir) async {
-                          return await showConfirmDeleteDialog(
-                            context,
-                            player.displayName,
-                          );
-                        },
-                        child: PlayerTile(
-                          player: player,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Profile(user: player),
+                            return Dismissible(
+                              key: Key(player.uid),
+                              direction: DismissDirection.endToStart,
+                              confirmDismiss: (dir) async {
+                                return await showConfirmDeleteDialog(
+                                  context,
+                                  player.displayName,
+                                );
+                              },
+                              child: PlayerTile(
+                                player: player,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          Profile(user: player),
+                                    ),
+                                  );
+                                },
                               ),
                             );
                           },
                         ),
-                      );
-                    },
-                  ),
                 ),
               ),
             ],
