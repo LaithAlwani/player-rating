@@ -15,6 +15,8 @@ class _SignInFormState extends ConsumerState<SignInForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  bool isSaving = false;
+
   String? _errorFeedback;
 
   @override
@@ -66,6 +68,9 @@ class _SignInFormState extends ConsumerState<SignInForm> {
             // submit button
             FilledButton(
               onPressed: () async {
+                setState(() {
+                  isSaving = true;
+                });
                 if (_formKey.currentState!.validate()) {
                   setState(() {
                     _errorFeedback = null;
@@ -76,7 +81,11 @@ class _SignInFormState extends ConsumerState<SignInForm> {
                   final success = await ref
                       .read(authNotifierProvider.notifier)
                       .signIn(email, password);
+                  print("Signin page $success");
                   if (!mounted) return;
+                  setState(() {
+                    isSaving = false;
+                  });
                   if (success) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("✅ تم تسجيل الدخول بنجاح")),
@@ -88,19 +97,17 @@ class _SignInFormState extends ConsumerState<SignInForm> {
                   }
                 }
               },
-              child: const Text('تسجيل الدخول'),
+              child: isSaving
+                  ? SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : Text('تسجيل الدخول'),
             ),
-            // TextButton(
-            //   onPressed: () async {
-            //     final user = await AuthService.signInWithGoogle();
-            //     if (user == null) {
-            //       setState(() {
-            //         _errorFeedback = "Incorrect login credentials";
-            //       });
-            //     }
-            //   },
-            //   child: const Text("Google Sign In"),
-            // ),
           ],
         ),
       ),

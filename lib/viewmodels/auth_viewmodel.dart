@@ -38,6 +38,9 @@ class AuthNotifier extends AsyncNotifier<AppUser?> {
       state = AsyncData(null);
 
       return true;
+    } on FirebaseAuthException catch (_) {
+      state = const AsyncData(null);
+      return false;
     } catch (e, st) {
       state = AsyncError(e, st);
       return false;
@@ -46,7 +49,7 @@ class AuthNotifier extends AsyncNotifier<AppUser?> {
 
   //login with email and password
   Future<bool> signIn(String email, String password) async {
-    state = const AsyncLoading();
+    // state = const AsyncLoading();
 
     try {
       final UserCredential credential = await _firebaseAuth
@@ -62,6 +65,9 @@ class AuthNotifier extends AsyncNotifier<AppUser?> {
       final appUser = await FirestoreService.getUserById(credential.user!.uid);
       state = AsyncData(appUser);
       return true;
+    } on FirebaseAuthException catch (_) {
+      state = const AsyncData(null);
+      return false;
     } catch (err, st) {
       state = AsyncError(err, st);
       return false;
@@ -81,7 +87,6 @@ class AuthNotifier extends AsyncNotifier<AppUser?> {
         return false; // ❌ Fix: return false for failure
       }
 
-      
       // 2️⃣ Check AppUser in Firestore
       final appUser = await FirestoreService.getUserById(user.uid);
 

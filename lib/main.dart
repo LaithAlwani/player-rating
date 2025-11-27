@@ -56,7 +56,7 @@ class MyApp extends ConsumerWidget {
         },
         loading: () =>
             Scaffold(body: const Center(child: CircularProgressIndicator())),
-        error: (err, _) => Scaffold(body: Center(child: Text('Error: $err'))),
+        error: (_, _) => WelcomeScreen(),
       ),
     );
   }

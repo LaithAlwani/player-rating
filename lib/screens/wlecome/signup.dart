@@ -15,6 +15,8 @@ class _SignUpFromState extends ConsumerState<SignUpFrom> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  bool isSaving = false;
+
   String? _errorFeedback;
   @override
   Widget build(BuildContext context) {
@@ -66,6 +68,9 @@ class _SignUpFromState extends ConsumerState<SignUpFrom> {
             //submit button
             FilledButton(
               onPressed: () async {
+                setState(() {
+                  isSaving = true;
+                });
                 if (_formKey.currentState!.validate()) {
                   setState(() {
                     _errorFeedback = null;
@@ -77,7 +82,14 @@ class _SignUpFromState extends ConsumerState<SignUpFrom> {
                       .read(authNotifierProvider.notifier)
                       .signUp(email, password);
                   if (!mounted) return;
-                  if (!success) {
+                  setState(() {
+                    isSaving = false;
+                  });
+                  if (success) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("✅ تم إنشاء حساب بنجاح")),
+                    );
+                  } else {
                     setState(() {
                       _errorFeedback = "❌ فشل إنشاء الحساب";
                     });
@@ -85,7 +97,16 @@ class _SignUpFromState extends ConsumerState<SignUpFrom> {
                 }
                 //errorr feedback
               },
-              child: const Text("إنشاء حساب"),
+              child: isSaving
+                  ? SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : const Text("إنشاء حساب"),
             ),
           ],
         ),
