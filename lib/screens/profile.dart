@@ -27,12 +27,16 @@ class _ProfileState extends ConsumerState<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(homeViewModelProvider);
+    final authState = ref.watch(authNotifierProvider);
+    if (authState.asData?.value == null) {
+      return const Scaffold(
+        body: Center(child: Text("Please log in to view profile.")),
+      );
+    }
+    //check the current user role
+    final canEdit = authState.asData!.value!.role == "admin";
 
-    final user = state.players.firstWhere(
-      (p) => p.uid == widget.user.uid,
-      orElse: () => widget.user,
-    );
+    final user = widget.user;
 
     return Scaffold(
       appBar: AppBar(
@@ -130,46 +134,56 @@ class _ProfileState extends ConsumerState<Profile> {
                     SizedBox(
                       width: 60,
                       child: GestureDetector(
-                        onTap: () async {
-                          await showValuePickerBottomSheet(
-                            context: context,
-                            title: "نقاط",
-                            subtitle:
-                                "القيمة الجديدة ستضاف إلى النقاط الحالية.",
-                            isPoints: true,
-                            initialValue: user.points ?? 0,
-                            onSave: (newValue) async {
-                              int totalPoints = (user.points ?? 0) + newValue;
-                              final homeMV = ref.read(
-                                homeViewModelProvider.notifier,
-                              );
+                        onTap: canEdit
+                            ? () async {
+                                await showValuePickerBottomSheet(
+                                  context: context,
+                                  title: "نقاط",
+                                  subtitle:
+                                      "القيمة الجديدة ستضاف إلى النقاط الحالية.",
+                                  isPoints: true,
+                                  initialValue: user.points ?? 0,
+                                  onSave: (newValue) async {
+                                    int totalPoints =
+                                        (user.points ?? 0) + newValue;
+                                    final homeMV = ref.read(
+                                      homeViewModelProvider.notifier,
+                                    );
 
-                              bool success = await homeMV.updateUser(user.uid, {
-                                "points": totalPoints,
-                              });
+                                    bool success = await homeMV.updateUser(
+                                      user.uid,
+                                      {"points": totalPoints},
+                                    );
 
-                              if (context.mounted) {
-                                if (success) {
-                                  homeMV.updateLocalPlayer(
-                                    user.copyWith(points: totalPoints),
-                                  );
-                                  Navigator.pop(context);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text("✅ تم الحفظ بنجاح"),
-                                    ),
-                                  );
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text("❌ حدث خطأ أثناء الحفظ"),
-                                    ),
-                                  );
-                                }
+                                    if (context.mounted) {
+                                      if (success) {
+                                        homeMV.updateLocalPlayer(
+                                          user.copyWith(points: totalPoints),
+                                        );
+                                        Navigator.pop(context);
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text("✅ تم الحفظ بنجاح"),
+                                          ),
+                                        );
+                                      } else {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                              "❌ حدث خطأ أثناء الحفظ",
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  },
+                                );
                               }
-                            },
-                          );
-                        },
+                            : null,
                         child: Column(
                           children: [
                             Text(
