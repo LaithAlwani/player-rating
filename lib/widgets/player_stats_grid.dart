@@ -116,6 +116,7 @@ class PlayerStatsGrid extends ConsumerWidget {
                   ref,
                   user,
                   item["arabic"].toString(),
+                  item["key"].toString(),
                   item["abbr"].toString(),
                   item["value"] as int,
                 ),
@@ -191,6 +192,7 @@ Future<void> _onStatTap(
   BuildContext context,
   WidgetRef ref,
   AppUser user,
+  String labelKey,
   String statKey,
   String label,
   int currentValue,
@@ -199,9 +201,10 @@ Future<void> _onStatTap(
 
   await showValuePickerBottomSheet(
     context: context,
-    title: statKey.toUpperCase(),
+    title: labelKey.toUpperCase(),
     initialValue: currentValue,
     onSave: (newValue) async {
+      print(" Updating $statKey to $newValue for user ${user.uid}");
       final updatedStats = user.stats!.copywith(
         fieldPlayer: user.isGoalkeeper
             ? null
@@ -211,8 +214,18 @@ Future<void> _onStatTap(
             : null,
       );
 
-      await homeVM.updateUser(user.uid, {"stats": updatedStats});
+      bool success = await homeVM.updateUser(user.uid, {"stats": updatedStats});
       homeVM.updateLocalPlayer(user.copyWith(stats: updatedStats));
+      if (context.mounted) Navigator.pop(context);
+      if (success) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("✅ تم الحفظ بنجاح")));
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("❌ حدث خطأ أثناء الحفظ")));
+      }
     },
   );
 }

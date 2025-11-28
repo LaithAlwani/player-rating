@@ -83,14 +83,8 @@ Future<void> showValuePickerBottomSheet({
                             ? null
                             : () async {
                                 setState(() => isSaving = true);
+                                print(tempValue);
                                 await onSave(tempValue);
-
-                                if (context.mounted) Navigator.pop(context);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("✅ تم الحفظ بنجاح"),
-                                  ),
-                                );
                               },
                         child: isSaving
                             ? const SizedBox(

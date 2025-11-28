@@ -177,7 +177,7 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
   }
 
   /// Update player in Firestore and locally
-  Future<void> updateUser(String uid, Map<String, dynamic> data) async {
+  Future<bool> updateUser(String uid, Map<String, dynamic> data) async {
     try {
       // Convert nested stats objects to Map
       final firestoreData = <String, dynamic>{};
@@ -190,7 +190,7 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
           firestoreData[key] = value;
         }
       });
-
+      print(firestoreData);
       await FirestoreService.updateUser(uid, firestoreData);
 
       // Update locally
@@ -211,10 +211,13 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
         final updatedPlayers = [...state.players];
         updatedPlayers[index] = updatedUser;
         state = state.copyWith(players: updatedPlayers);
+        return true;
       }
     } catch (e) {
       print("❌ Error updating user: $e");
-      rethrow;
+
+      return false;
     }
+    return false;
   }
 }
