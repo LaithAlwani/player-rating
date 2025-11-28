@@ -95,7 +95,6 @@ Future<void> showValuePickerBottomSheet({
                             ? null
                             : () async {
                                 setState(() => isSaving = true);
-                                print(tempValue);
                                 await onSave(tempValue);
                                 setState(() => isSaving = false);
                               },

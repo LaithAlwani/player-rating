@@ -86,9 +86,11 @@ class _SignUpFromState extends ConsumerState<SignUpFrom> {
                     isSaving = false;
                   });
                   if (success) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("✅ تم إنشاء حساب بنجاح")),
-                    );
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("✅ تم إنشاء حساب بنجاح")),
+                      );
+                    }
                   } else {
                     setState(() {
                       _errorFeedback = "❌ فشل إنشاء الحساب";

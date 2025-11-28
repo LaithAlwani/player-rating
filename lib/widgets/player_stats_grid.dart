@@ -205,7 +205,6 @@ Future<void> _onStatTap(
     subtitle: statKey,
     initialValue: currentValue,
     onSave: (newValue) async {
-      print(" Updating $statKey to $newValue for user ${user.uid}");
       final updatedStats = user.stats!.copywith(
         fieldPlayer: user.isGoalkeeper
             ? null
@@ -217,15 +216,17 @@ Future<void> _onStatTap(
 
       bool success = await homeVM.updateUser(user.uid, {"stats": updatedStats});
       homeVM.updateLocalPlayer(user.copyWith(stats: updatedStats));
-      if (context.mounted) Navigator.pop(context);
-      if (success) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("✅ تم الحفظ بنجاح")));
-      } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("❌ حدث خطأ أثناء الحفظ")));
+      if (context.mounted) {
+        if (success) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text("✅ تم الحفظ بنجاح")));
+          Navigator.pop(context);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("❌ حدث خطأ أثناء الحفظ")),
+          );
+        }
       }
     },
   );

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lanus_academy/firebase_options.dart';
 
@@ -32,12 +33,12 @@ class AuthService {
           }, SetOptions(merge: true));
 
       if (credential.user != null) {
-        print("✅ Google Sign-In successful: ${credential.user}");
+        debugPrint("✅ Google Sign-In successful: ${credential.user}");
         return credential.user;
       }
       return null;
     } catch (err) {
-      print("❌ Google Sign-In error: $err");
+      debugPrint("❌ Google Sign-In error: $err");
       return null;
     }
   }

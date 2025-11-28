@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:lanus_academy/models/app_user.dart';
 
 class FirestoreService {
@@ -17,20 +18,20 @@ class FirestoreService {
     try {
       await _userRef.doc(user.uid).set(user);
     } catch (e) {
-      print("❌ Error creating user: $e");
+      debugPrint("❌ Error creating user: $e");
       rethrow;
     }
   }
 
   /// Get a user by their UID
   static Future<AppUser?> getUserById(String uid) async {
-    print("🔔 Fetching user with UID: $uid");
+    debugPrint("🔔 Fetching user with UID: $uid");
     try {
       final userDoc = await _userRef.doc(uid).get();
       if (!userDoc.exists) return null;
       return userDoc.data();
     } catch (e) {
-      print("❌ Error fetching user: $e");
+      debugPrint("❌ Error fetching user: $e");
       return null;
     }
   }
@@ -40,7 +41,7 @@ class FirestoreService {
     try {
       await _userRef.doc(uid).update(data);
     } catch (e) {
-      print("❌ Error updating user: $e");
+      debugPrint("❌ Error updating user: $e");
       rethrow;
     }
   }
@@ -50,7 +51,7 @@ class FirestoreService {
     try {
       await _userRef.doc(uid).delete();
     } catch (e) {
-      print("❌ Error deleting user: $e");
+      debugPrint("❌ Error deleting user: $e");
       rethrow;
     }
   }
@@ -80,7 +81,7 @@ class FirestoreService {
       query = query.startAfterDocument(lastDoc);
     }
     final test = query.get();
-    print("home view model test: ${test.toString()}");
+    debugPrint("home view model test: ${test.toString()}");
     return test;
   }
 

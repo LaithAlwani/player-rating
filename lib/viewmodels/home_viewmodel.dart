@@ -126,7 +126,7 @@ class HomeViewModel extends ChangeNotifier {
       players[index] = updatedUser;
       notifyListeners();
     } catch (e) {
-      print("❌ Error updating user: $e");
+      debugPrint("❌ Error updating user: $e");
       rethrow;
     }
   }

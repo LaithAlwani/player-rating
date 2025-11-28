@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:lanus_academy/models/app_user.dart';
 import 'package:lanus_academy/models/field_player_stats.dart';
@@ -123,7 +124,7 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
         state = state.copyWith(players: updatedPlayers);
       }
     } catch (e) {
-      print("❌ Error fetching player $uid: $e");
+      debugPrint("❌ Error fetching player $uid: $e");
     }
   }
 
@@ -142,7 +143,6 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
         .map((d) => d.data())
         .where((player) => player.role != "admin")
         .toList();
-    print(newPlayers);
     newPlayers.sort((a, b) => (b.points ?? 0).compareTo(a.points ?? 0));
 
     final lastDoc = snapshot.docs.isNotEmpty
@@ -190,7 +190,6 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
           firestoreData[key] = value;
         }
       });
-      print(firestoreData);
       await FirestoreService.updateUser(uid, firestoreData);
 
       // Update locally
@@ -214,7 +213,7 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
         return true;
       }
     } catch (e) {
-      print("❌ Error updating user: $e");
+      debugPrint("❌ Error updating user: $e");
 
       return false;
     }
