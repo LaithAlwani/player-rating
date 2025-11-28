@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 Future<void> showValuePickerBottomSheet({
   required BuildContext context,
   required String title,
+  String? subtitle,
   required int initialValue,
+  bool isPoints = false,
   required Future<void> Function(int value) onSave,
 }) {
   return showModalBottomSheet(
@@ -32,6 +34,13 @@ Future<void> showValuePickerBottomSheet({
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  Text(
+                    subtitle ?? "",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
 
                   const SizedBox(height: 16),
 
@@ -40,12 +49,15 @@ Future<void> showValuePickerBottomSheet({
                     child: ListWheelScrollView.useDelegate(
                       itemExtent: 50,
                       perspective: 0.003,
-                      controller: FixedExtentScrollController(initialItem: 50),
+                      controller: FixedExtentScrollController(
+                        initialItem: isPoints ? 0 : initialValue - 1,
+                      ),
                       onSelectedItemChanged: (index) =>
                           setState(() => tempValue = index + 1),
                       childDelegate: ListWheelChildBuilderDelegate(
                         builder: (context, index) {
-                          if (index < 0 || index >= 99) return null;
+                          final minIndex = isPoints ? -100 : 0;
+                          if (index < minIndex || index >= 99) return null;
                           return Center(
                             child: Text(
                               (index + 1).toString(),

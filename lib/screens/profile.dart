@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -136,6 +134,9 @@ class _ProfileState extends ConsumerState<Profile> {
                           await showValuePickerBottomSheet(
                             context: context,
                             title: "نقاط",
+                            subtitle:
+                                "القيمة الجديدة ستضاف إلى النقاط الحالية.",
+                            isPoints: true,
                             initialValue: user.points ?? 0,
                             onSave: (newValue) async {
                               int totalPoints = (user.points ?? 0) + newValue;
@@ -147,24 +148,24 @@ class _ProfileState extends ConsumerState<Profile> {
                                 "points": totalPoints,
                               });
 
-                              if (!mounted) return;
-
-                              if (success) {
-                                homeMV.updateLocalPlayer(
-                                  user.copyWith(points: totalPoints),
-                                );
-                                Navigator.pop(context);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("✅ تم الحفظ بنجاح"),
-                                  ),
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("❌ حدث خطأ أثناء الحفظ"),
-                                  ),
-                                );
+                              if (context.mounted) {
+                                if (success) {
+                                  homeMV.updateLocalPlayer(
+                                    user.copyWith(points: totalPoints),
+                                  );
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("✅ تم الحفظ بنجاح"),
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("❌ حدث خطأ أثناء الحفظ"),
+                                    ),
+                                  );
+                                }
                               }
                             },
                           );
