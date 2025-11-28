@@ -44,7 +44,12 @@ class _ProfileState extends ConsumerState<Profile> {
                 padding: const EdgeInsets.all(8.0),
                 child: Image.asset('assets/logo.png'),
               ),
-        title: Text("الملف الشخصي"),
+        title: Column(
+          children: [
+            Text(user.displayName, style: const TextStyle(fontSize: 24)),
+            Text(user.email, style: const TextStyle(fontSize: 12)),
+          ],
+        ),
         centerTitle: true,
         actions: [
           IconButton(
@@ -74,7 +79,7 @@ class _ProfileState extends ConsumerState<Profile> {
               ),
               SizedBox(height: 32),
               Positioned(
-                top: 50,
+                top: 100,
                 right: 80,
                 child: Hero(
                   tag: user.uid,
@@ -90,110 +95,104 @@ class _ProfileState extends ConsumerState<Profile> {
                 ),
               ),
               Positioned(
-                top: 230,
-                child: Text(
-                  user.displayName,
-                  style: const TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    // color: Colors.white,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Positioned(
-                top: 285,
-                child: Text(
-                  user.email,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    // color: Colors.white,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Positioned(
                 top: 30,
-                left: 80,
-                child: Text(
-                  user.overallRating.toString(),
-                  style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-                ),
-              ),
-              Positioned(
-                top: 95,
-                left: 95,
-                child: Text(
-                  user.position,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    // color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Positioned(
-                top: 150,
                 left: 75,
-                child: Text(
-                  DateFormat('dd/MM/yy').format(user.lastLogin.toDate()),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // ⭐ Overall Rating
+                    Text(
+                      user.overallRating.toString(),
+                      style: const TextStyle(
+                        fontSize: 48,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
 
-                  style: const TextStyle(
-                    fontSize: 16,
-                    // color: Colors.white,
-                    // fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Positioned(
-                top: 180,
-                left: 90,
-                width: 30,
-                child: SizedBox(
-                  child: GestureDetector(
-                    onTap: () async {
-                      await showValuePickerBottomSheet(
-                        context: context,
-                        title: "نقاط",
-                        initialValue: user.points ?? 0,
-                        onSave: (newValue) async {
-                          int totalPoints = (user.points ?? 0) + newValue;
-                          final homeMV = ref.read(
-                            homeViewModelProvider.notifier,
-                          );
-                          await homeMV.updateUser(user.uid, {
-                            "points": totalPoints,
-                          });
-                          homeMV.updateLocalPlayer(
-                            user.copyWith(points: totalPoints),
+                    // ⭐ Position
+                    Text(
+                      user.position,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 30),
+
+                    // ⭐ Last Login
+                    Text(
+                      DateFormat('dd/MM/yy').format(user.lastLogin.toDate()),
+                      style: const TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 30),
+
+                    // ⭐ Points (tappable)
+                    SizedBox(
+                      width: 60,
+                      child: GestureDetector(
+                        onTap: () async {
+                          await showValuePickerBottomSheet(
+                            context: context,
+                            title: "نقاط",
+                            initialValue: user.points ?? 0,
+                            onSave: (newValue) async {
+                              int totalPoints = (user.points ?? 0) + newValue;
+                              final homeMV = ref.read(
+                                homeViewModelProvider.notifier,
+                              );
+
+                              bool success = await homeMV.updateUser(user.uid, {
+                                "points": totalPoints,
+                              });
+
+                              if (!mounted) return;
+
+                              if (success) {
+                                homeMV.updateLocalPlayer(
+                                  user.copyWith(points: totalPoints),
+                                );
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("✅ تم الحفظ بنجاح"),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("❌ حدث خطأ أثناء الحفظ"),
+                                  ),
+                                );
+                              }
+                            },
                           );
                         },
-                      );
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          user.points.toString(),
-                          style: TextStyle(
-                            fontSize: 48,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        child: Column(
+                          children: [
+                            Text(
+                              user.points.toString(),
+                              style: const TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const Text(
+                              "PTS",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          "PTS",
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
+
               Positioned(bottom: 138, child: PlayerStatsGrid(user: user)),
             ],
           ),

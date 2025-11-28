@@ -85,6 +85,7 @@ Future<void> showValuePickerBottomSheet({
                                 setState(() => isSaving = true);
                                 print(tempValue);
                                 await onSave(tempValue);
+                                setState(() => isSaving = false);
                               },
                         child: isSaving
                             ? const SizedBox(
