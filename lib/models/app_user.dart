@@ -107,7 +107,7 @@ class AppUser {
       createdAt: createdAt,
       stats: stats ?? this.stats,
       updatedAt: updatedAt ?? Timestamp.now(),
-      lastLogin: lastLogin ?? Timestamp.now(),
+      lastLogin: lastLogin ?? this.lastLogin,
     );
   }
 

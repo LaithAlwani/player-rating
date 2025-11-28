@@ -96,6 +96,10 @@ class AuthNotifier extends AsyncNotifier<AppUser?> {
         return true;
       }
 
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).update(
+        {'lastLogin': FieldValue.serverTimestamp()},
+      );
+
       // 3️⃣ Normal existing user → set authenticated state
       state = AsyncData(appUser);
       return true;
