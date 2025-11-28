@@ -202,6 +202,7 @@ Future<void> _onStatTap(
   await showValuePickerBottomSheet(
     context: context,
     title: labelKey.toUpperCase(),
+    subtitle: statKey,
     initialValue: currentValue,
     onSave: (newValue) async {
       print(" Updating $statKey to $newValue for user ${user.uid}");
