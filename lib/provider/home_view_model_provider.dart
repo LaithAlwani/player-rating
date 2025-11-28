@@ -137,11 +137,7 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
       limit: 5,
     );
 
-    final newPlayers = snapshot.docs
-        .map((d) => d.data())
-        .where((player) => player.role != "admin")
-        .toList();
-    newPlayers.sort((a, b) => (b.points ?? 0).compareTo(a.points ?? 0));
+    final newPlayers = snapshot.docs.map((d) => d.data()).toList();
 
     final lastDoc = snapshot.docs.isNotEmpty
         ? snapshot.docs.last
