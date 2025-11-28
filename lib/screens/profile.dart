@@ -28,15 +28,18 @@ class _ProfileState extends ConsumerState<Profile> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authNotifierProvider);
-    if (authState.asData?.value == null) {
-      return const Scaffold(
-        body: Center(child: Text("Please log in to view profile.")),
-      );
-    }
-    //check the current user role
-    final canEdit = authState.asData!.value!.role == "admin";
 
-    final user = widget.user;
+    //check the current user role
+    final canEdit = authState.asData!.value?.role == "admin" || false;
+
+    final user = ref.watch(
+      homeViewModelProvider.select(
+        (state) => state.players.firstWhere(
+          (p) => p.uid == widget.user.uid,
+          orElse: () => widget.user, // fallback to the original user passed in
+        ),
+      ),
+    );
 
     return Scaffold(
       appBar: AppBar(

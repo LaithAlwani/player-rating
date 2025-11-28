@@ -103,13 +103,6 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                 ? const Icon(Icons.add_a_photo, size: 40, color: Colors.grey)
                 : null,
           ),
-          // CircleAvatar(
-          //   radius: 50,
-          //   backgroundImage: _selectedImage,
-          //   child: _selectedImage == null
-          //       ? const Icon(Icons.add_a_photo, size: 40)
-          //       : null,
-          // ),
           const SizedBox(height: 20),
           const Text("اختر صورة"),
         ],

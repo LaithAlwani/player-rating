@@ -124,10 +124,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               key: Key(player.uid),
                               direction: DismissDirection.endToStart,
                               confirmDismiss: (dir) async {
-                                return await showConfirmDeleteDialog(
-                                  context,
-                                  player.displayName,
-                                );
+                                final shouldDelete =
+                                    await showConfirmDeleteDialog(
+                                      context,
+                                      player.displayName,
+                                      player.uid,
+                                    );
+                                if (shouldDelete) {
+                                  await homeVM.removePlayer(player.uid);
+                                }
+                                return shouldDelete;
                               },
                               child: PlayerTile(
                                 player: player,

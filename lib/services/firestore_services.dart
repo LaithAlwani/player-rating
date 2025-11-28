@@ -47,12 +47,13 @@ class FirestoreService {
   }
 
   /// Delete user document
-  static Future<void> deleteUser(String uid) async {
+  static Future<bool> deleteUser(String uid) async {
     try {
       await _userRef.doc(uid).delete();
+      return true;
     } catch (e) {
       debugPrint("❌ Error deleting user: $e");
-      rethrow;
+      return false;
     }
   }
 
@@ -73,15 +74,16 @@ class FirestoreService {
     int limit = 10,
   }) {
     Query<AppUser> query = _userRef
-        .where("role", isNotEqualTo: "admin")
-        .orderBy("role")
+        .where("role", isNotEqualTo: "admin") // server-side filtering
+        .orderBy("role") 
+        .orderBy("points", descending: true)
+        .orderBy("uid")
         .limit(limit);
 
     if (lastDoc != null) {
       query = query.startAfterDocument(lastDoc);
     }
     final test = query.get();
-    debugPrint("home view model test: ${test.toString()}");
     return test;
   }
 
@@ -90,7 +92,6 @@ class FirestoreService {
     DocumentSnapshot<AppUser>? lastDoc,
     int limit = 10,
   }) {
-
     Query<AppUser> query = _userRef
         .orderBy("displayNameLower")
         .startAt([queryText])

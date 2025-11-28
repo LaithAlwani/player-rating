@@ -49,7 +49,7 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
     loadInitial();
   }
 
-  final int pageSize = 10;
+  final int pageSize = 12;
 
   /// Load first page
   Future<void> loadInitial() async {
@@ -61,7 +61,6 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
     );
     final snapshot = await FirestoreService.fetchUsersPage(limit: pageSize);
     final playersList = snapshot.docs.map((d) => d.data()).toList();
-    playersList.sort((a, b) => (b.points ?? 0).compareTo(a.points ?? 0));
 
     final lastDoc = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
     final hasMore = snapshot.docs.length >= pageSize;
@@ -96,7 +95,6 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
     }
 
     final newPlayers = snapshot.docs.map((d) => d.data()).toList();
-    newPlayers.sort((a, b) => (b.points ?? 0).compareTo(a.points ?? 0));
 
     final lastDoc = snapshot.docs.isNotEmpty
         ? snapshot.docs.last
@@ -218,5 +216,12 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
       return false;
     }
     return false;
+  }
+
+  Future<void> removePlayer(String uid) async {
+    final updatedPlayers = state.players
+        .where((player) => player.uid != uid)
+        .toList();
+    state = state.copyWith(players: updatedPlayers);
   }
 }
