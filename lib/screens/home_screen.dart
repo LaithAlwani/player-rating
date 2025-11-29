@@ -61,15 +61,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ],
       ),
-      body: Builder(
-        builder: (_) {
-          if (state.isLoading && state.players.isEmpty) {
-            // First load
-            return const Center(child: CircularProgressIndicator());
-          }
-
+      body:
           // Loaded & has players
-          return Column(
+          Column(
             children: [
               // Search bar
               Padding(
@@ -96,66 +90,72 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ),
               ),
-
-              Expanded(
-                child: RefreshIndicator(
-                  onRefresh: () async => homeVM.refreshPlayers(),
-                  child: !state.isLoading && state.players.isEmpty
-                      ?
-                        // Finished loading but still empty
-                        const Center(child: Text("لا يوجد لاعبين"))
-                      : ListView.builder(
-                          controller: _scrollController,
-                          itemCount:
-                              state.players.length + (state.hasMore ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            if (index == state.players.length) {
-                              return const Padding(
-                                padding: EdgeInsets.all(16),
-                                child: Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              );
-                            }
-
-                            final player = state.players[index];
-
-                            return Dismissible(
-                              key: Key(player.uid),
-                              direction: DismissDirection.endToStart,
-                              confirmDismiss: (dir) async {
-                                final shouldDelete =
-                                    await showConfirmDeleteDialog(
-                                      context,
-                                      player.displayName,
-                                      player.uid,
-                                    );
-                                if (shouldDelete) {
-                                  await homeVM.removePlayer(player.uid);
-                                }
-                                return shouldDelete;
-                              },
-                              child: PlayerTile(
-                                player: player,
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          Profile(user: player),
+              Builder(
+                builder: (_) {
+                  if (state.isLoading && state.players.isEmpty) {
+                    // First load
+                    return Expanded(
+                      child: const Center(child: CircularProgressIndicator()),
+                    );
+                  }
+                  return Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () async => homeVM.refreshPlayers(),
+                      child: !state.isLoading && state.players.isEmpty
+                          ?
+                            // Finished loading but still empty
+                            const Center(child: Text("لا يوجد لاعبين"))
+                          : ListView.builder(
+                              controller: _scrollController,
+                              itemCount:
+                                  state.players.length +
+                                  (state.hasMore ? 1 : 0),
+                              itemBuilder: (context, index) {
+                                if (index == state.players.length) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
                                     ),
                                   );
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                ),
+                                }
+                                final player = state.players[index];
+                                return Dismissible(
+                                  key: Key(player.uid),
+                                  direction: DismissDirection.endToStart,
+                                  confirmDismiss: (dir) async {
+                                    final shouldDelete =
+                                        await showConfirmDeleteDialog(
+                                          context,
+                                          player.displayName,
+                                          player.uid,
+                                        );
+                                    if (shouldDelete) {
+                                      await homeVM.removePlayer(player.uid);
+                                    }
+                                    return shouldDelete;
+                                  },
+                                  child: PlayerTile(
+                                    player: player,
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              Profile(user: player),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                    ),
+                  );
+                },
               ),
             ],
-          );
-        },
-      ),
+          ),
     );
   }
 }
