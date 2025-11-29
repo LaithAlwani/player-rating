@@ -78,22 +78,20 @@ class _SignUpFromState extends ConsumerState<SignUpFrom> {
                   final email = _emailController.text.trim();
                   final password = _passwordController.text.trim();
 
-                  final success = await ref
+                  final result = await ref
                       .read(authNotifierProvider.notifier)
                       .signUp(email, password);
                   if (!mounted) return;
                   setState(() {
                     isSaving = false;
                   });
-                  if (success) {
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("✅ تم إنشاء حساب بنجاح")),
-                      );
-                    }
-                  } else {
+
+                  if (result != "success") {
+                    // Sign-up succeeded → navigate to onboarding or home
+
+                    // Sign-up failed → show the Arabic error message
                     setState(() {
-                      _errorFeedback = "❌ فشل إنشاء الحساب";
+                      _errorFeedback = "❌ $result";
                     });
                   }
                 }

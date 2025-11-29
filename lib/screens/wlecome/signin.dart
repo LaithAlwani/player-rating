@@ -78,24 +78,22 @@ class _SignInFormState extends ConsumerState<SignInForm> {
                   final email = _emailController.text.trim();
                   final password = _passwordController.text.trim();
 
-                  final success = await ref
+                  final result = await ref
                       .read(authNotifierProvider.notifier)
                       .signIn(email, password);
                   if (!mounted) return;
                   setState(() {
                     isSaving = false;
                   });
-                  if (success) {
+                  if (result == "success") {
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("✅ تم تسجيل الدخول بنجاح"),
-                        ),
+                        SnackBar(content: Text(" ✅ تم تسجيل الدخول بنجاح")),
                       );
                     }
                   } else {
                     setState(() {
-                      _errorFeedback = "❌ بيانات تسجيل الدخول غير صحيحة";
+                      _errorFeedback = "❌ $result";
                     });
                   }
                 }

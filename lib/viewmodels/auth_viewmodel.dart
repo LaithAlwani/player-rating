@@ -21,72 +21,99 @@ class AuthNotifier extends AsyncNotifier<AppUser?> {
   }
 
   /// SIGN UP — only creates Firebase user, not Firestore user.
-  Future<bool> signUp(String email, String password) async {
-    // state = const AsyncLoading();
-
+  Future<String> signUp(String email, String password) async {
     try {
       final UserCredential credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      // Do NOT create Firestore user here
-      // Just return and navigate to onboarding
       if (credential.user == null) {
         state = AsyncData(null);
-        return false; // <-- never return null
+        return "حدث خطأ، الرجاء المحاولة مرة أخرى"; // Generic error
       }
 
+      // Create an empty AppUser object locally (do not save to Firestore yet)
       state = AsyncData(
         AppUser(
           uid: credential.user!.uid,
           displayName: "",
           displayNameLower: "",
-          email: "",
+          email: email,
           position: "",
           role: "user",
         ),
       );
 
-      return true;
-    } on FirebaseAuthException catch (_) {
-      state = const AsyncData(null);
-      return false;
+      return "success"; // Success indicator
+    } on FirebaseAuthException catch (e) {
+      state = AsyncData(null);
+
+      // Handle specific Firebase errors
+      switch (e.code) {
+        case "email-already-in-use":
+          return "هذا البريد الإلكتروني لمستخدم فعال";
+        case "invalid-email":
+          return "البريد الإلكتروني غير صالح";
+        case "operation-not-allowed":
+          return "عملية التسجيل غير مسموح بها حالياً";
+        case "weak-password":
+          return "كلمة المرور ضعيفة جدًا";
+        default:
+          return "حدث خطأ غير معروف، الرجاء المحاولة مرة أخرى";
+      }
     } catch (e, st) {
       state = AsyncError(e, st);
-      return false;
+      return "حدث خطأ، الرجاء المحاولة مرة أخرى";
     }
   }
 
   //login with email and password
-  Future<bool> signIn(String email, String password) async {
-    // state = const AsyncLoading();
-
+  Future<String> signIn(String email, String password) async {
     try {
       final UserCredential credential = await _firebaseAuth
           .signInWithEmailAndPassword(email: email, password: password);
 
       final firebaseUser = credential.user;
-      if (firebaseUser == null) return false;
+
       // 🔥 Update lastLogin timestamp in Firestore
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(firebaseUser.uid)
+          .doc(firebaseUser!.uid)
           .update({'lastLogin': FieldValue.serverTimestamp()});
-      final appUser = await FirestoreService.getUserById(credential.user!.uid);
+
+      // Fetch user from Firestore
+      final appUser = await FirestoreService.getUserById(firebaseUser.uid);
       state = AsyncData(appUser);
-      return true;
-    } on FirebaseAuthException catch (_) {
-      state = const AsyncData(null);
-      return false;
+
+      return "success"; // Sign-in successful
+    } on FirebaseAuthException catch (e) {
+      state = AsyncData(null);
+      // Handle Firebase sign-in errors with Arabic messages
+      switch (e.code) {
+        case "invalid-credential":
+          return "بيانات الاعتماد غير صالحة";
+        case "invalid-email":
+          return "البريد الإلكتروني غير صالح";
+        case "user-disabled":
+          return "تم تعطيل حساب المستخدم";
+        case "user-not-found":
+          return "المستخدم غير موجود";
+        case "wrong-password":
+          return "كلمة المرور غير صحيحة";
+        case "too-many-requests":
+          return "عدد كبير من المحاولات، حاول لاحقًا";
+        default:
+          return "حدث خطأ غير معروف، الرجاء المحاولة مرة أخرى";
+      }
     } catch (err, st) {
       state = AsyncError(err, st);
-      return false;
+      return "حدث خطأ، الرجاء المحاولة مرة أخرى";
     }
   }
 
   // Sign in with Google
   Future<bool> signInWithGoogle() async {
     try {
-      state = const AsyncLoading();
+      // state = const AsyncLoading();
 
       // 1️⃣ Sign in with Google (this returns Firebase User?)
       final user = await AuthService.signInWithGoogle();
@@ -101,7 +128,16 @@ class AuthNotifier extends AsyncNotifier<AppUser?> {
 
       if (appUser == null) {
         // User exists in Firebase but NOT in Firestore → needs onboarding
-        state = const AsyncData(null);
+        state = AsyncData(
+          AppUser(
+            uid: user.uid,
+            displayName: "",
+            displayNameLower: "",
+            email: user.email ?? "",
+            position: "",
+            role: "user",
+          ),
+        );
         return true;
       }
 
@@ -119,8 +155,13 @@ class AuthNotifier extends AsyncNotifier<AppUser?> {
   }
 
   // Sign out
-  Future<void> signOut() async {
-    await _firebaseAuth.signOut();
-    state = const AsyncData(null);
+  Future<String> signOut() async {
+    try {
+      await _firebaseAuth.signOut();
+      state = const AsyncData(null);
+      return "success"; // sign-out successful
+    } catch (e) {
+      return "حدث خطأ أثناء تسجيل الخروج";
+    }
   }
 }

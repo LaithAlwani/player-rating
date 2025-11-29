@@ -55,7 +55,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         actions: [
           IconButton(
             onPressed: () async {
-              await ref.read(authNotifierProvider.notifier).signOut();
+              final result = await ref
+                  .read(authNotifierProvider.notifier)
+                  .signOut();
+              if (context.mounted) {
+                if (result == "success") {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("✅ رافقتكم السلامة")),
+                  );
+                } else {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text("❌ $result")));
+                }
+              }
             },
             icon: const Icon(Icons.logout),
           ),
