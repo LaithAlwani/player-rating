@@ -128,28 +128,35 @@ class HomeViewModelNotifier extends StateNotifier<HomeState> {
 
   /// Search
   Future<void> searchPlayers(String query) async {
-    state = state.copyWith(currentSearch: query.trim().toLowerCase());
-    if (state.currentSearch == "") return loadInitial();
+    try {
+      state = state.copyWith(
+        isLoading: true,
+        currentSearch: query.trim().toLowerCase(),
+      );
+      if (state.currentSearch == "") return loadInitial();
 
-    QuerySnapshot<AppUser> snapshot = await FirestoreService.searchUsersPage(
-      queryText: state.currentSearch,
-      lastDoc: state.lastDoc,
-      limit: 5,
-    );
+      QuerySnapshot<AppUser> snapshot = await FirestoreService.searchUsersPage(
+        queryText: state.currentSearch,
+        lastDoc: state.lastDoc,
+        limit: 10,
+      );
 
-    final newPlayers = snapshot.docs.map((d) => d.data()).toList();
+      final newPlayers = snapshot.docs.map((d) => d.data()).toList();
 
-    final lastDoc = snapshot.docs.isNotEmpty
-        ? snapshot.docs.last
-        : state.lastDoc;
-    final hasMore = snapshot.docs.length >= pageSize;
+      final lastDoc = snapshot.docs.isNotEmpty
+          ? snapshot.docs.last
+          : state.lastDoc;
+      final hasMore = snapshot.docs.length >= pageSize;
 
-    state = state.copyWith(
-      players: [...newPlayers],
-      lastDoc: lastDoc,
-      hasMore: hasMore,
-      isLoading: false,
-    );
+      state = state.copyWith(
+        players: [...newPlayers],
+        lastDoc: lastDoc,
+        hasMore: hasMore,
+        isLoading: false,
+      );
+    } catch (e) {
+      debugPrint("❌ Error searching players: $e");
+    }
   }
 
   /// Refresh all players

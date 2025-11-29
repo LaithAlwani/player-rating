@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lanus_academy/provider/auth_provider.dart';
@@ -17,6 +19,8 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final ScrollController _scrollController = ScrollController();
 
+  Timer? _debounce;
+
   @override
   void initState() {
     super.initState();
@@ -35,8 +39,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    // Cancel previous timer if still active
+    final homeVM = ref.read(homeViewModelProvider.notifier);
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      // Trigger search after 500ms of no typing
+      homeVM.searchPlayers(query);
+    });
   }
 
   @override
@@ -99,10 +115,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     overlayColor: const WidgetStatePropertyAll(
                       Colors.transparent,
                     ),
-                    onSubmitted: (query) => homeVM.searchPlayers(query),
+                    onChanged: (query) => _onSearchChanged(query),
+                    onSubmitted: (query) => _onSearchChanged(query),
                   ),
                 ),
               ),
+          
               Builder(
                 builder: (_) {
                   if (state.isLoading && state.players.isEmpty) {

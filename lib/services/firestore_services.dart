@@ -75,7 +75,7 @@ class FirestoreService {
   }) {
     Query<AppUser> query = _userRef
         .where("role", isNotEqualTo: "admin") // server-side filtering
-        .orderBy("role") 
+        .orderBy("role")
         .orderBy("points", descending: true)
         .orderBy("uid")
         .limit(limit);
@@ -92,17 +92,24 @@ class FirestoreService {
     DocumentSnapshot<AppUser>? lastDoc,
     int limit = 10,
   }) {
-    Query<AppUser> query = _userRef
-        .orderBy("displayNameLower")
-        .startAt([queryText])
-        .endAt(["$queryText\uf8ff"])
-        .limit(limit);
+    print("Search users with query: $queryText");
+    print("Search users last doc: ${lastDoc?.data()}");
+    try {
+      Query<AppUser> query = _userRef
+          .orderBy("displayNameLower")
+          .startAt([queryText.trim()])
+          .endAt(["${queryText.trim()}\uf8ff"])
+          .limit(limit);
 
-    if (lastDoc != null) {
-      query = query.startAfterDocument(lastDoc);
+      // if (lastDoc != null) {
+      //   query = query.startAfterDocument(lastDoc);
+      // }
+
+      return query.get();
+    } catch (e) {
+      debugPrint("❌ Error in searchUsersPage: $e");
+      rethrow;
     }
-
-    return query.get();
   }
 
   // Stream of user updates (for real-time profile changes)
