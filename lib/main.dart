@@ -50,7 +50,9 @@ class MyApp extends ConsumerWidget {
         data: (user) {
           final firebaseUser = FirebaseAuth.instance.currentUser;
           if (firebaseUser == null) return WelcomeScreen();
-          if (user == null) return OnboardingScreen();
+          if (user?.displayName == "" || user == null) {
+            return OnboardingScreen();
+          }
           if (user.role != "admin") return Profile(user: user);
           return HomeScreen();
         },

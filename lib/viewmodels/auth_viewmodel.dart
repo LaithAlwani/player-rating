@@ -22,7 +22,7 @@ class AuthNotifier extends AsyncNotifier<AppUser?> {
 
   /// SIGN UP — only creates Firebase user, not Firestore user.
   Future<bool> signUp(String email, String password) async {
-    state = const AsyncLoading();
+    // state = const AsyncLoading();
 
     try {
       final UserCredential credential = await FirebaseAuth.instance
@@ -35,7 +35,16 @@ class AuthNotifier extends AsyncNotifier<AppUser?> {
         return false; // <-- never return null
       }
 
-      state = AsyncData(null);
+      state = AsyncData(
+        AppUser(
+          uid: credential.user!.uid,
+          displayName: "",
+          displayNameLower: "",
+          email: "",
+          position: "",
+          role: "user",
+        ),
+      );
 
       return true;
     } on FirebaseAuthException catch (_) {
