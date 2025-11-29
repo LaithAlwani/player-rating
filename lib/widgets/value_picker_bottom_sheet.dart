@@ -25,7 +25,6 @@ Future<void> showValuePickerBottomSheet({
               child: Column(
                 children: [
                   const SizedBox(height: 16),
-
                   // Title
                   Text(
                     title,
@@ -41,9 +40,7 @@ Future<void> showValuePickerBottomSheet({
                       fontWeight: FontWeight.normal,
                     ),
                   ),
-
                   const SizedBox(height: 16),
-
                   // Number Picker
                   Expanded(
                     child: ListWheelScrollView.useDelegate(
@@ -52,21 +49,32 @@ Future<void> showValuePickerBottomSheet({
                       controller: FixedExtentScrollController(
                         initialItem: isPoints ? 0 : initialValue - 1,
                       ),
-                      onSelectedItemChanged: (index) =>
-                          setState(() => tempValue = index + 1),
+                      onSelectedItemChanged: (index) => setState(
+                        () => tempValue = isPoints ? index * 10 : index + 1,
+                      ),
                       childDelegate: ListWheelChildBuilderDelegate(
                         builder: (context, index) {
                           final minIndex = isPoints ? -100 : 0;
                           if (index < minIndex || index >= 99) return null;
                           return Center(
                             child: Text(
-                              (index + 1).toString(),
+                              isPoints
+                                  ? (index * 10).toString()
+                                  : (index + 1).toString(),
                               style: TextStyle(
-                                fontSize: (index + 1) == tempValue ? 28 : 22,
-                                fontWeight: (index + 1) == tempValue
+                                fontSize:
+                                    (isPoints ? index * 10 : index + 1) ==
+                                        tempValue
+                                    ? 28
+                                    : 22,
+                                fontWeight:
+                                    (isPoints ? index * 10 : index + 1) ==
+                                        tempValue
                                     ? FontWeight.bold
                                     : FontWeight.normal,
-                                color: (index + 1) == tempValue
+                                color:
+                                    (isPoints ? index * 10 : index + 1) ==
+                                        tempValue
                                     ? Colors.blue
                                     : Colors.black,
                               ),
