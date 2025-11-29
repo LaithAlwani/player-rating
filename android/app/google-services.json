@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "709025605105-lf83pbi86nr73e1qd48j9j843nmucb30.apps.googleusercontent.com",
+          "client_id": "709025605105-341pcfko2eommt0s4428dh9aarkbq200.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.lasolutions.lanusacademy",
-            "certificate_hash": "e5861032762210331725ff3a58ca2d2c82f0de66"
+            "certificate_hash": "cde5cf2c7a2747c1c28a0b4bb910c094c88273ca"
           }
         },
         {
